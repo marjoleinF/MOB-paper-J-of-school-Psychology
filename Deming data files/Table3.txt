@@ -1,0 +1,105 @@
+	Test_1
+	b/se
+HS_5to6	-0.025
+	[0.091]
+HS_7to10	-0.116
+	[0.072]
+HS_11to14	-0.201***
+	[0.070]
+Pre_5to6	0.167**
+	[0.083]
+Pre_7to10	0.230***
+	[0.070]
+Pre_11to14	0.182**
+	[0.072]
+p(All age effects equal)	0.074
+R squared	0.028
+Sample Size	4687
+	Test_2
+	b/se
+HS_5to6	0.089
+	[0.083]
+HS_7to10	0.042
+	[0.065]
+HS_11to14	-0.051
+	[0.065]
+Pre_5to6	0.018
+	[0.081]
+Pre_7to10	0.105
+	[0.064]
+Pre_11to14	0.069
+	[0.069]
+imputed Premature	-0.022
+	[0.066]
+Premature_miss	-0.209*
+	[0.110]
+p(All age effects equal)	0.088
+R squared	0.196
+Sample Size	4687
+	Test_3
+	b/se
+HS_5to6	0.097
+	[0.079]
+HS_7to10	0.068
+	[0.061]
+HS_11to14	-0.017
+	[0.061]
+Pre_5to6	-0.020
+	[0.078]
+Pre_7to10	0.084
+	[0.061]
+Pre_11to14	0.033
+	[0.065]
+Standardized values of PermInc	0.114*
+	[0.064]
+imputed AgeAFQT_std	0.350***
+	[0.057]
+MomHS	0.141**
+	[0.071]
+MomSomeColl	0.277***
+	[0.080]
+imputed Premature	-0.044
+	[0.061]
+Premature_miss	-0.228*
+	[0.120]
+p(All age effects equal)	0.155
+R squared	0.269
+Sample Size	4687
+	Test_4
+	b/se
+HS_5to6	0.131
+	[0.087]
+HS_7to10	0.116*
+	[0.060]
+HS_11to14	0.029
+	[0.061]
+Pre_5to6	-0.102
+	[0.084]
+Pre_7to10	0.031
+	[0.061]
+Pre_11to14	-0.040
+	[0.066]
+p(All age effects equal)	0.092
+R squared	0.021
+Sample Size	4687
+	Test_5
+	b/se
+HS_5to6	0.143*
+	[0.085]
+HS_7to10	0.132**
+	[0.060]
+HS_11to14	0.054
+	[0.061]
+Pre_5to6	-0.081
+	[0.085]
+Pre_7to10	0.046
+	[0.065]
+Pre_11to14	-0.023
+	[0.069]
+imputed Premature	-0.010
+	[0.074]
+Premature_miss	-0.367
+	[0.273]
+p(All age effects equal)	0.152
+R squared	0.050
+Sample Size	4687

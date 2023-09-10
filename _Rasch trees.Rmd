@@ -1,0 +1,256 @@
+---
+title: "DIF detection with Rasch Trees in SDQ items from ECLSK data"
+author: "Marjolein Fokkema"
+date: "2023-08-15"
+output: pdf_document
+---
+
+# Load data
+
+```{r, eval=FALSE}
+library("data.table")
+ICPSR <- as.data.frame(fread( "28023-0001-Data.tsv" ))
+```
+
+We could analyse data from grade 8 students from the ECLSK (Early Childhood Longitudinal Study - Kindergarten class of ...). 
+
+Student quesionnaires are included in most waves, including adaptations of the Self-Description Questionnaire II (SDQII; Marsh, 1990).
+
+In the ECLSK data, a variable starting with:
+
+* 'T' indicates teacher rating, 
+* 'C' indicates child self-report, 
+* 'P' indicates parent report. 
+
+The number afterwards indicates the assessment wave.
+
+# Get SDQ-II item responses and partitioning variables
+
+### Original SDQ-II has 102 items, comprising 11 subscales: 
+
+Subscale | Number of items
+-------------------------
+Physical Abilities | 8 
+Physical Appearance | 8
+Opposite-Sex Relationships | 10 
+Same-Sex Relationships | 8 
+Parent Relationships | 8 
+Honesty–Trustworthiness | 10 
+Emotional Stability | 10 
+Self-Esteem | 10
+Math | 10 
+Verbal | 10 
+General School | 10
+------------------------
+
+### ECLSK grade 3 and 5 assessments
+
+42 items were administered from the SDQ-I forming shorter subscales:
+
+* Perceived Interest/ Competence in Reading (8 items)
+
+* Perceived Interest/ Competence in Math (8 items)
+
+* Perceived Interest/ Competence in All School Subjects (6 items)
+
+* Perceived Interest/ Competence in Peer Relations (6 items)
+
+* Externalizing Problem Behaviors (6 items)
+
+* Internalizing Problem Behaviors (8 items)
+
+### ECLSK grade 8 (C7)
+
+The self-description questionnaire consists of 16 statements. Children rated whether each item was “not at all true,” “a little bit true,” “mostly true,” or “very true.” Three subscales were produced from the self-description questionnaire items. The scale scores on all self-description questionnaire scales represent the mean rating of the items included in the scale. 
+
+* The SDQ Perceived Interest/Competence–Reading subscale includes four items on grades in English and the child’s interest in and enjoyment of reading.
+
+* The SDQ Perceived Interest/Competence–Math subscale includes four items on mathematics grades and the child’s interest in and enjoyment of mathematics.
+
+* The SDQ Internalizing Behavior subscale includes eight items on internalizing problem behaviors such as feeling “sad a lot of the time,” feeling lonely, feeling ashamed of mistakes, feeling frustrated, and worrying about school and friendships.
+
+
+```{r}
+sdq <- c("C7MTHBST", "C7ANGRY", "C7LIKRD", "C7WRYTST", "C7MTHGD", "C7LONLY",
+  "C7ENGBST", "C7SAD", "C7LIKMTH", "C7WRYWEL", "C7ENJRD", "C7WRYFIN",
+  "C7ENJMTH", "C7WRYHNG", "C7GRDENG", "C7ASHAME")
+math <- c("C7MTHBST", "C7MTHGD", "C7LIKMTH", "C7ENJMTH")
+intern <- c("C7ANGRY", "C7WRYTST", "C7LONLY", "C7SAD", "C7WRYWEL", "C7WRYFIN", 
+            "C7WRYHNG", "C7ASHAME")
+read <- c("C7LIKRD", "C7ENGBST", "C7ENJRD", "C7GRDENG")
+part_vars <- c("GENDER", "RACE", "WKSESL")#, "T6INTERN", "T6EXTERN", "T6INTERP", 
+               #"T6CONTRO") ## some omitted to avoid large numbers of splits
+```
+
+
+```{r, eval=FALSE}
+dat <- ICPSR[ , sdq]
+sapply(dat, table, useNA = "ifany")
+dat <- cbind(dat, ICPSR[ , part_vars])
+dat <- data.frame(sapply(dat, function(x) ifelse(x == -9, NA, x)))
+dat <- dat[complete.cases(dat), ]
+dat$GENDER <- factor(dat$GENDER)
+dat$RACE <- factor(dat$RACE)
+saveRDS(dat, file = "ECLSK_SDQ.Rda")
+```
+
+Note that some partitioning variables are teacher assessments from the previous assessment ('6'). These were not available for the '7' assessment. Loads of other potential partitioning variables are available.
+
+
+# Fit Rasch trees
+
+```{r, warning=FALSE, message=FALSE}
+dat <- readRDS("ECLSK_SDQ.Rda")
+##devtools::install_github("mirka-henninger/raschtreeMH")
+table(complete.cases(dat))
+library("raschtreeMH")
+library("psychotree") ## needed for plotting, but interferes with stopfun_mantelhaenszel
+```
+
+### Math
+
+* Q20. How true is each of these about you? Q20a. Math is one of my best subjects.
+Variable Name : C7MTHBST (math)
+
+* Q20. How true is each of these about you? Q20e. I get good grades in math.
+Variable Name : C7MTHGD (math)
+
+* Q20. How true is each of these about you? Q20i. I like math.
+Variable Name : C7LIKMTH (math)
+
+* Q20. How true is each of these about you? Q20m. I enjoy doing work in math.
+Variable Name : C7ENJMTH (math)
+
+
+
+```{r, warning=FALSE, message=FALSE}
+## Construct data.frame for analysis
+mydata <- dat[ , part_vars] 
+mydata$resp <- sapply(dat[ , math], function(x) ifelse(x > 2, 1, 0)) 
+rasch_tree <- raschtree(resp ~ ., data = mydata)
+length(rasch_tree)
+detach("package:psychotree", unload = TRUE)
+rasch_tree_es <- raschtree(resp ~ ., data = mydata,
+                    stopfun = stopfun_mantelhaenszel(purification = "iterative", 
+                                                     stopcrit = "C"))
+length(rasch_tree_es)
+library("psychotree") 
+plot(rasch_tree_es, gp = gpar(cex = .5))
+```
+
+### Reading
+
+* Q20. How true is each of these about you? Q20c. I like reading.
+Variable Name : C7LIKRD (reading)
+
+* Q20. How true is each of these about you? Q20g. English is one of my best subjects.
+Variable Name : C7ENGBST (reading)
+
+* Q20. How true is each of these about you? Q20k. I enjoy doing work in reading.
+Variable Name : C7ENJRD (reading)
+
+* Q20. How true is each of these about you? Q20o. I get good grades in English.
+Variable Name : C7GRDENG (reading)
+
+
+
+```{r, warning=FALSE, message=FALSE}
+mydata <- dat[ , part_vars] 
+read ## rearrange so as to have same order as with math
+mydata$resp <- sapply(dat[ , read[c(2,4,1,3)]], function(x) ifelse(x > 2, 1, 0)) 
+rasch_tree <- raschtree(resp ~ ., data = mydata)
+length(rasch_tree)
+detach("package:psychotree", unload = TRUE)
+rasch_tree_es <- raschtree(resp ~ ., data = mydata,
+                    stopfun = stopfun_mantelhaenszel(purification = "iterative",
+                                                     stopcrit = "C"))
+length(rasch_tree_es)
+library("psychotree") 
+plot(rasch_tree_es, gp = gpar(cex = .5))
+```
+
+
+### Internalizing
+
+* Q20. How true is each of these about you? Q20b. I feel angry when I have trouble learning.
+Variable Name : C7ANGRY (internalizing)
+
+* Q20. How true is each of these about you? Q20d. I worry about taking tests.
+Variable Name : C7WRYTST (internalizing)
+
+* Q20. How true is each of these about you? Q20f. I often feel lonely.
+Variable Name : C7LONLY (internalizing)
+
+* Q20. How true is each of these about you? Q20h. I feel sad a lot of the time.
+Variable Name : C7SAD (internalizing)
+
+* Q20. How true is each of these about you? Q20j. I worry about doing well in school.
+Variable Name : C7WRYWEL (internalizing)
+
+* Q20. How true is each of these about you? Q20l. I worry about finishing my work.
+Variable Name : C7WRYFIN (internalizing)
+
+* Q20. How true is each of these about you? Q20n. I worry about having someone to hang out with at school.
+Variable Name : C7WRYHNG (internalizing)
+
+* Q20. How true is each of these about you? Q20p. I feel ashamed when I make mistakes at school.
+Variable Name : C7ASHAME (internalizing)
+
+
+```{r,  warning=FALSE, message=FALSE}
+mydata <- dat[ , part_vars] 
+mydata$resp <- sapply(dat[ , intern], function(x) ifelse(x > 2, 1, 0)) 
+rasch_tree <- raschtree(resp ~ ., data = mydata)
+length(rasch_tree)
+detach("package:psychotree", unload = TRUE)
+rasch_tree_es <- raschtree(resp ~ ., data = mydata,
+                    stopfun = stopfun_mantelhaenszel(purification = "iterative", 
+                                                     stopcrit = "C"))
+length(rasch_tree_es)
+library("psychotree") 
+plot(rasch_tree_es, gp = gpar(cex = .5))
+```
+
+\newpage
+# Other possible questionnaire in ECLSK 
+
+* Q21. How do you feel about each of the following statements? Q21a. I feel good about myself.
+Variable Name : C7FLGOOD
+
+* Q21. How do you feel about each of the following statements? Q21b. I don’t have enough control over the direction my life is taking.
+Variable Name : C7NOCNTR
+
+* Q21. How do you feel about each of the following statements? Q21c. In my life, good luck is more important than hard work for success.
+Variable Name : C7LUCK
+
+* Q21. How do you feel about each of the following statements? Q21d. I feel I am a person of worth, the equal of other people.
+Variable Name : C7WORTH
+
+* Q21. How do you feel about each of the following statements? Q21e. I am able to do things as well as most other people.
+Variable Name : C7ABLE
+
+* Q21. How do you feel about each of the following statements? Q21f. Every time I try to get ahead, something or somebody stops me.
+Variable Name : C7STOPS
+
+* Q21. How do you feel about each of the following statements? Q21g. My plans hardly ever work out, so planning only makes me unhappy.
+Variable Name : C7NOPLAN
+
+* Q21. How do you feel about each of the following statements? Q21h. On the whole, I am satisfied with myself.
+Variable Name : C7SATISF
+
+* Q21. How do you feel about each of the following statements? Q21i. I certainly feel useless at times.
+Variable Name : C7USELES
+
+* Q21. How do you feel about each of the following statements? Q21j. At times I think I am no good at all.
+Variable Name : C7NOGOOD
+
+* Q21. How do you feel about each of the following statements? Q21k. When I make plans, I am almost certain I can make them work.
+Variable Name : C7PLANS
+
+Q21. How do you feel about each of the following statements? Q21l. I fell I do not have much to be proud of.
+
+Variable Name : C7NOPRD
+
+Q21. How do you feel about each of the following statements? Q21m. Chance and luck are very important for
+what happens in my life.
+Variable Name : C7CHANCE

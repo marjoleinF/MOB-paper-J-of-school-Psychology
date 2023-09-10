@@ -1,0 +1,486 @@
+	Repeat
+	b/se
+HS2_FE90	-0.067*
+	[0.040]
+Pre2_FE90	-0.086**
+	[0.037]
+p(Head Start=Other Preschools)	0.681
+R squared	0.138
+Sample Size	1169
+	LD
+	b/se
+HS2_FE90	-0.059***
+	[0.021]
+Pre2_FE90	-0.024
+	[0.023]
+p(Head Start=Other Preschools)	0.187
+R squared	0.114
+Sample Size	1247
+	HSGrad
+	b/se
+HS2_FE90	0.085***
+	[0.031]
+Pre2_FE90	-0.011
+	[0.031]
+p(Head Start=Other Preschools)	0.011
+R squared	0.150
+Sample Size	1251
+	HSGrad_GED
+	b/se
+HS2_FE90	0.064*
+	[0.034]
+Pre2_FE90	-0.012
+	[0.034]
+p(Head Start=Other Preschools)	0.061
+R squared	0.161
+Sample Size	1100
+	someCollAtt
+	b/se
+HS2_FE90	0.059
+	[0.036]
+Pre2_FE90	0.049
+	[0.039]
+p(Head Start=Other Preschools)	0.833
+R squared	0.155
+Sample Size	1251
+	Idle
+	b/se
+HS2_FE90	-0.072*
+	[0.038]
+Pre2_FE90	0.013
+	[0.034]
+p(Head Start=Other Preschools)	0.058
+R squared	0.123
+Sample Size	1251
+	Crime
+	b/se
+HS2_FE90	-0.003
+	[0.038]
+Pre2_FE90	0.002
+	[0.037]
+p(Head Start=Other Preschools)	0.929
+R squared	0.166
+Sample Size	1251
+	TeenPreg
+	b/se
+HS2_FE90	-0.017
+	[0.036]
+Pre2_FE90	-0.052
+	[0.036]
+p(Head Start=Other Preschools)	0.433
+R squared	0.151
+Sample Size	1251
+	PoorHealth
+	b/se
+HS2_FE90	-0.069***
+	[0.027]
+Pre2_FE90	-0.020
+	[0.032]
+p(Head Start=Other Preschools)	0.154
+R squared	0.106
+Sample Size	1251
+	HS_Repeat_Black
+	b/se
+HS_Black	-0.103*
+	[0.055]
+HS_NonBlack	-0.029
+	[0.059]
+Pre_Black	-0.125*
+	[0.065]
+Pre_NonBlack	-0.061
+	[0.043]
+p(HS=Pre (Black))	0.766
+p(HS=Pre NonBlack))	0.614
+p(HS_Black=HS_NonBlack)	0.357
+R squared	0.140
+Sample Size	1169
+	HS_Repeat_Male
+	b/se
+HS_Male	-0.203***
+	[0.058]
+HS_NonMale	0.056
+	[0.056]
+Pre_Male	-0.092
+	[0.060]
+Pre_NonMale	-0.079
+	[0.054]
+p(HS=Pre (Male))	0.120
+p(HS=Pre NonMale))	0.028
+p(HS_Male=HS_NonMale)	0.002
+R squared	0.156
+Sample Size	1169
+	HS_Repeat_lowAFQT
+	b/se
+HS_lowAFQT	-0.135**
+	[0.068]
+HS_NonlowAFQT	-0.031
+	[0.049]
+Pre_lowAFQT	-0.079
+	[0.084]
+Pre_NonlowAFQT	-0.085**
+	[0.042]
+p(HS=Pre (lowAFQT))	0.569
+p(HS=Pre NonlowAFQT))	0.324
+p(HS_lowAFQT=HS_NonlowAFQT)	0.219
+R squared	0.140
+Sample Size	1169
+	HS_LD_Black
+	b/se
+HS_Black	-0.071**
+	[0.028]
+HS_NonBlack	-0.046
+	[0.030]
+Pre_Black	-0.035
+	[0.040]
+Pre_NonBlack	-0.016
+	[0.027]
+p(HS=Pre (Black))	0.347
+p(HS=Pre NonBlack))	0.442
+p(HS_Black=HS_NonBlack)	0.526
+R squared	0.114
+Sample Size	1247
+	HS_LD_Male
+	b/se
+HS_Male	-0.047
+	[0.030]
+HS_NonMale	-0.070***
+	[0.026]
+Pre_Male	-0.033
+	[0.030]
+Pre_NonMale	-0.015
+	[0.033]
+p(HS=Pre (Male))	0.670
+p(HS=Pre NonMale))	0.120
+p(HS_Male=HS_NonMale)	0.562
+R squared	0.115
+Sample Size	1247
+	HS_LD_lowAFQT
+	b/se
+HS_lowAFQT	-0.109**
+	[0.042]
+HS_NonlowAFQT	-0.031
+	[0.021]
+Pre_lowAFQT	-0.012
+	[0.068]
+Pre_NonlowAFQT	-0.025
+	[0.021]
+p(HS=Pre (lowAFQT))	0.170
+p(HS=Pre NonlowAFQT))	0.795
+p(HS_lowAFQT=HS_NonlowAFQT)	0.099
+R squared	0.120
+Sample Size	1247
+	HS_HSGrad_Black
+	b/se
+HS_Black	0.111***
+	[0.041]
+HS_NonBlack	0.054
+	[0.048]
+Pre_Black	-0.013
+	[0.049]
+Pre_NonBlack	-0.010
+	[0.038]
+p(HS=Pre (Black))	0.019
+p(HS=Pre NonBlack))	0.237
+p(HS_Black=HS_NonBlack)	0.373
+R squared	0.151
+Sample Size	1251
+	HS_HSGrad_Male
+	b/se
+HS_Male	0.114**
+	[0.048]
+HS_NonMale	0.058
+	[0.044]
+Pre_Male	-0.018
+	[0.051]
+Pre_NonMale	-0.004
+	[0.042]
+p(HS=Pre (Male))	0.023
+p(HS=Pre NonMale))	0.223
+p(HS_Male=HS_NonMale)	0.417
+R squared	0.151
+Sample Size	1251
+	HS_HSGrad_lowAFQT
+	b/se
+HS_lowAFQT	0.166***
+	[0.056]
+HS_NonlowAFQT	0.042
+	[0.036]
+Pre_lowAFQT	-0.027
+	[0.083]
+Pre_NonlowAFQT	-0.009
+	[0.032]
+p(HS=Pre (lowAFQT))	0.024
+p(HS=Pre NonlowAFQT))	0.207
+p(HS_lowAFQT=HS_NonlowAFQT)	0.060
+R squared	0.155
+Sample Size	1251
+	HS_HSGrad_GED_Black
+	b/se
+HS_Black	0.067
+	[0.044]
+HS_NonBlack	0.059
+	[0.051]
+Pre_Black	-0.015
+	[0.055]
+Pre_NonBlack	-0.010
+	[0.041]
+p(HS=Pre (Black))	0.159
+p(HS=Pre NonBlack))	0.226
+p(HS_Black=HS_NonBlack)	0.912
+R squared	0.161
+Sample Size	1100
+	HS_HSGrad_GED_Male
+	b/se
+HS_Male	0.110**
+	[0.052]
+HS_NonMale	0.020
+	[0.047]
+Pre_Male	-0.004
+	[0.056]
+Pre_NonMale	-0.021
+	[0.045]
+p(HS=Pre (Male))	0.084
+p(HS=Pre NonMale))	0.421
+p(HS_Male=HS_NonMale)	0.211
+R squared	0.164
+Sample Size	1100
+	HS_HSGrad_GED_lowAFQT
+	b/se
+HS_lowAFQT	0.126**
+	[0.063]
+HS_NonlowAFQT	0.027
+	[0.038]
+Pre_lowAFQT	-0.038
+	[0.093]
+Pre_NonlowAFQT	-0.007
+	[0.034]
+p(HS=Pre (lowAFQT))	0.082
+p(HS=Pre NonlowAFQT))	0.428
+p(HS_lowAFQT=HS_NonlowAFQT)	0.178
+R squared	0.165
+Sample Size	1100
+	HS_someColl_Black
+	b/se
+HS_Black	0.137***
+	[0.049]
+HS_NonBlack	-0.032
+	[0.050]
+Pre_Black	0.064
+	[0.055]
+Pre_NonBlack	0.038
+	[0.052]
+p(HS=Pre (Black))	0.262
+p(HS=Pre NonBlack))	0.257
+p(HS_Black=HS_NonBlack)	0.015
+R squared	0.163
+Sample Size	1251
+	HS_someColl_Male
+	b/se
+HS_Male	0.025
+	[0.045]
+HS_NonMale	0.091*
+	[0.054]
+Pre_Male	0.060
+	[0.054]
+Pre_NonMale	0.040
+	[0.060]
+p(HS=Pre (Male))	0.566
+p(HS=Pre NonMale))	0.428
+p(HS_Male=HS_NonMale)	0.345
+R squared	0.157
+Sample Size	1251
+	HS_someColl_lowAFQT
+	b/se
+HS_lowAFQT	0.014
+	[0.051]
+HS_NonlowAFQT	0.083*
+	[0.047]
+Pre_lowAFQT	0.057
+	[0.071]
+Pre_NonlowAFQT	0.049
+	[0.046]
+p(HS=Pre (lowAFQT))	0.585
+p(HS=Pre NonlowAFQT))	0.543
+p(HS_lowAFQT=HS_NonlowAFQT)	0.310
+R squared	0.157
+Sample Size	1251
+	HS_Idle_Black
+	b/se
+HS_Black	-0.031
+	[0.054]
+HS_NonBlack	-0.124**
+	[0.055]
+Pre_Black	-0.005
+	[0.062]
+Pre_NonBlack	0.023
+	[0.038]
+p(HS=Pre (Black))	0.692
+p(HS=Pre NonBlack))	0.018
+p(HS_Black=HS_NonBlack)	0.223
+R squared	0.127
+Sample Size	1251
+	HS_Idle_Male
+	b/se
+HS_Male	-0.101**
+	[0.050]
+HS_NonMale	-0.043
+	[0.052]
+Pre_Male	0.019
+	[0.050]
+Pre_NonMale	0.008
+	[0.053]
+p(HS=Pre (Male))	0.047
+p(HS=Pre NonMale))	0.394
+p(HS_Male=HS_NonMale)	0.397
+R squared	0.125
+Sample Size	1251
+	HS_Idle_lowAFQT
+	b/se
+HS_lowAFQT	-0.071
+	[0.070]
+HS_NonlowAFQT	-0.072
+	[0.045]
+Pre_lowAFQT	0.006
+	[0.087]
+Pre_NonlowAFQT	0.016
+	[0.034]
+p(HS=Pre (lowAFQT))	0.410
+p(HS=Pre NonlowAFQT))	0.084
+p(HS_lowAFQT=HS_NonlowAFQT)	0.996
+R squared	0.123
+Sample Size	1251
+	HS_Crime_Black
+	b/se
+HS_Black	0.010
+	[0.050]
+HS_NonBlack	-0.018
+	[0.058]
+Pre_Black	-0.005
+	[0.063]
+Pre_NonBlack	0.005
+	[0.043]
+p(HS=Pre (Black))	0.824
+p(HS=Pre NonBlack))	0.719
+p(HS_Black=HS_NonBlack)	0.709
+R squared	0.166
+Sample Size	1251
+	HS_Crime_Male
+	b/se
+HS_Male	0.025
+	[0.058]
+HS_NonMale	-0.029
+	[0.053]
+Pre_Male	-0.009
+	[0.054]
+Pre_NonMale	0.011
+	[0.054]
+p(HS=Pre (Male))	0.614
+p(HS=Pre NonMale))	0.496
+p(HS_Male=HS_NonMale)	0.506
+R squared	0.167
+Sample Size	1251
+	HS_Crime_lowAFQT
+	b/se
+HS_lowAFQT	-0.008
+	[0.069]
+HS_NonlowAFQT	0.000
+	[0.045]
+Pre_lowAFQT	0.010
+	[0.081]
+Pre_NonlowAFQT	-0.001
+	[0.042]
+p(HS=Pre (lowAFQT))	0.838
+p(HS=Pre NonlowAFQT))	0.982
+p(HS_lowAFQT=HS_NonlowAFQT)	0.923
+R squared	0.166
+Sample Size	1251
+	HS_TeenPreg_Black
+	b/se
+HS_Black	-0.039
+	[0.051]
+HS_NonBlack	0.002
+	[0.053]
+Pre_Black	-0.098
+	[0.062]
+Pre_NonBlack	-0.025
+	[0.042]
+p(HS=Pre (Black))	0.395
+p(HS=Pre NonBlack))	0.667
+p(HS_Black=HS_NonBlack)	0.589
+R squared	0.153
+Sample Size	1251
+	HS_TeenPreg_Male
+	b/se
+HS_Male	0.014
+	[0.052]
+HS_NonMale	-0.045
+	[0.056]
+Pre_Male	0.025
+	[0.055]
+Pre_NonMale	-0.128**
+	[0.060]
+p(HS=Pre (Male))	0.857
+p(HS=Pre NonMale))	0.217
+p(HS_Male=HS_NonMale)	0.457
+R squared	0.156
+Sample Size	1251
+	HS_TeenPreg_lowAFQT
+	b/se
+HS_lowAFQT	-0.033
+	[0.065]
+HS_NonlowAFQT	-0.007
+	[0.043]
+Pre_lowAFQT	-0.035
+	[0.077]
+Pre_NonlowAFQT	-0.057
+	[0.039]
+p(HS=Pre (lowAFQT))	0.987
+p(HS=Pre NonlowAFQT))	0.350
+p(HS_lowAFQT=HS_NonlowAFQT)	0.735
+R squared	0.152
+Sample Size	1251
+	HS_PoorHealth_Black
+	b/se
+HS_Black	-0.047
+	[0.035]
+HS_NonBlack	-0.093**
+	[0.043]
+Pre_Black	-0.002
+	[0.045]
+Pre_NonBlack	-0.032
+	[0.041]
+p(HS=Pre (Black))	0.315
+p(HS=Pre NonBlack))	0.242
+p(HS_Black=HS_NonBlack)	0.427
+R squared	0.107
+Sample Size	1251
+	HS_PoorHealth_Male
+	b/se
+HS_Male	-0.034
+	[0.037]
+HS_NonMale	-0.103**
+	[0.042]
+Pre_Male	0.014
+	[0.045]
+Pre_NonMale	-0.054
+	[0.047]
+p(HS=Pre (Male))	0.296
+p(HS=Pre NonMale))	0.349
+p(HS_Male=HS_NonMale)	0.247
+R squared	0.109
+Sample Size	1251
+	HS_PoorHealth_lowAFQT
+	b/se
+HS_lowAFQT	-0.090*
+	[0.047]
+HS_NonlowAFQT	-0.059*
+	[0.034]
+Pre_lowAFQT	-0.044
+	[0.073]
+Pre_NonlowAFQT	-0.012
+	[0.035]
+p(HS=Pre (lowAFQT))	0.522
+p(HS=Pre NonlowAFQT))	0.245
+p(HS_lowAFQT=HS_NonlowAFQT)	0.594
+R squared	0.107
+Sample Size	1251
