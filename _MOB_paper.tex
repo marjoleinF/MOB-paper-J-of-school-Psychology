@@ -18,19 +18,23 @@
 \usepackage[colorinlistoftodos, textsize=footnotesize]{todonotes}
 %%\todo[inline, color=green!40]{This is a green inline comment.}
 
+%text from Marjolein edited by Caro
+\newcommand{\edc}[1]{\textcolor{blue}{#1}}
+
 \linespread{1.3}
 
 
-\title{One Model May Not Fit All: Subgroup Detection Using Model-Based Recursive Partitioning}
+\title{One Model May Not Fit All: Subgroup Detection Using MOB}
 \shorttitle{shorttitle}
 \authorsnames{Marjolein Fokkema$^1$ \& Carolin Strobl$^2$}
 \authorsaffiliations{$^1$Leiden University, $^2$Universit\"at Z\"urich}
 
-\abstract{Model-based recursive partitioning \cite{ZeilyHoth08} is a flexible framework for detecting subgroups with differential effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity of intervention effects. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item-response theory models. In the first case study, we show how GLMM trees \cite{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to a dataset from a study of \cite{Demi09}, who compared longitudinal performance of siblings who did, and siblings who did not participate in the Head Start program. Using GLMM trees, we identify subgroups of families in which children show comparatively larger or smaller gains in performance following participation in Head Start. In a second case study, we show how Rasch trees \cite{StroyKopf15} can be used to detect subgroups with different parameters in IRT models. We show how a recently developed stopping criterion \cite{HennyDeba23} can be used to guide subgroup detection based on effect sizes instead of statistical significance.\\}
+\abstract{MOB \citep[MOB]{ZeilyHoth08} is a flexible framework for detecting subgroups \edc{of persons showing different} effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity of intervention effects. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item-response theory models. In the first case study, we show how GLMM trees \citep{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to a dataset from a study of \citep{Demi09}, who compared longitudinal performance of siblings who did, and siblings who did not participate in the Head Start program. Using GLMM trees, we identify subgroups of families in which children show comparatively larger or smaller gains in performance following participation in Head Start. In a second case study, we show how Rasch trees \citep{StroyKopf15} can be used to detect subgroups with different item parameters in IRT models, \edc{i.e.~differential item functioning (DIF).
+DIF should be investigated before using test results for comparing groups, because undetected DIF can affect test fairness.} We show how a recently developed stopping criterion \citep{HennyDeba23} can be used to guide subgroup detection based on effect sizes instead of statistical significance.\\}
 
 \usepackage{Sweave}
 \begin{document}
-\input{MOB_paper-concordance}
+\input{_MOB_paper-concordance}
 \renewenvironment{Schunk}{\small}{}
 
 
@@ -45,30 +49,79 @@
 \section{Introduction}
 \label{sec:Introduction}
 
-\todo[inline]{Introduce and explain MOB.}
+MOB \citep[MOB]{ZeilyHoth08} is a semi-parametric approach for detecting differences in the parameters of a statistical
+model between groups of persons. This method is a generalization of the principle of recursive partitioning, that is also used in classification and regression trees \citet{Breetal:1984}. 
+In classification and regression trees, the aim is to detect groups of persons, specified by (combinations of) covariates, that differ in a response variable. An example could be that children with ???? and ???? show higher average exam grades than others. 
+MOB generalizes this idea by identifying groups of persons, specified by (combinations of) covariates, that differ in a the parameters of a statistical model. An example could be that children with ???? and ???? show higher slopes in a regression model relating time spent studying and exam grades than others. 
+
+The framework of MOB is very flexible and can be applied in combination with a variety of statistical models. In this article, we will highlight two such combinations that we consider particularly relevant for research in school psychology: MOB for mixed-effects models and for models from Rasch measurement models. Mixed-effects models become relevant whenever data are collected in a repeated measures or nested data structures, for example when children are tested at several time points (so that time points are nested in children) and/or when children from different classes from different schools (so that children are nested in classes, which are again nested in schools) participate in a study. In application example 1 we will illustrate how MOB can be used to detect subgroup-specific intervention effects while taking into account the nested data structure. 
+
+\todo[inline]{should we call a psychological test a test/an instrument/??? to distinguish it from the verb and noun for statistical test?}
+
+While for this first application example we assume that the administered ??? items/test has already been thoroughly validated, for application example 2 we go back in the research process to the point where a new test is administered to a validation sample. Before using the test in our research, we need to make sure that test results are comparable, for example between children of different genders. If certain items pose an advantage or disadvantage to either group, they are said to violate measurement invariance or exhibit differential item functioning (DIF). In order to test for DIF in the framework of Item Response Theory or Rasch modelling \cite{AnthyDiPe16,DebStrZei:2022:CRC,Mall97}, groups of persons are compared with respect to the item parameters for their specific group. This can be done in a way that allows to detect DIF on top of any true group differences in ability. While many standard approaches for testing DIF are limited to comparing typically two pre-specified groups at a time, we will show in application example 2 that MOB more flexibly allows to detect groups of persons with different item parameters in a data-driven way. 
+
+In the following section, we will give a short introduction into the algorithm and statistical concepts behind MOB. Readers interested in learning more about its predecessor method, classification and regression trees, are referred to the introduction by \citet{StrMalTut:2009:PM}. An alternative framework for detecting groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with covariates. A comparison of both approches is given by \citet{FriStrZei:2014}.
+
+\todo[inline]{Caro: I mostly added our own citations so far, need to add more from other authors}
+
+\todo[inline]{Caro: move this to next section}
+One important aspect that we would like to point out, however, is that some algorithms for classification and regression trees and related methods suffer from a problem called variable selection bias. This means that, due to their construction principles, some algorithms systematically prefer variables of certain types. 
+
+\section{The algorithm behind MOB}
+
+What you see displayed in Figures ??? and ???, which will be explained in detail in the application example sections, is the result of the MOB algorithm for a linear mixed-effects model (Figure ???) and for a binary Rasch model (Figure ???). Both/???all figures share the tree-structure at the top. The starting point at the very top of each tree is called the root node (so it is actually an upside down tree). The root node contains the entire sample of persons in the data set. From there, the persons are devided into subgroups. The subgroups are defined by covariates and cutpoints in those covariates (for example, in the semi-continuous covariate ??? \todo{adapt to final examples} the cutpoint ??? was selected; in a binary covariate like ???, on the other hand, there is only one possible cutpoint, namely between the two categories). Which splitting variable and cutpoint is selected in each step of the recursive partitiong algorithms is further explained below. The parametric model to which the MOB algorithm is applied is visualized in the end nodes at the bottom of each tree. While in Figure ??? each end node contains a linear mixed-effecs model with a group-specific effect for the ??? intervention, in Figure ??? each end node contains the group-specific item parameters of a Rasch model for the ??? items. 
+
+The fact that Figures ??? display more than one end node means that one joint mixed-effects or Rasch model was not appropriate to describe the pattern in the data. 
+
+Figure ??? also shows that, out of the ??? covariates that were presented to the algorithm, only ??? were actually selected. Variables are selected based on ????. Variables that are no associated with a difference in the model parameters are not included in the tree, i.e., the tree performs automatic variable selection. 
+
+still no type I error inflation because closed testing procedure ???cite wie in Raschtree paper 
+
+\todo[inline]{Caro: following text copy pasted from Raschtree paper, ueberarbeiten}
+
+What is important to note here is that the entire structure identified by the trees was not pre-specified and provided to the algorithm, but was learned from the data in an exploratory way. This is a key feature of the MOB approach that makes it very flexible and distinguishes it from purely parametric approaches, where only those main effects and interactions that are explicitly included in the specification of the model are considered.
+
+Technically, the following consecutive steps are used to infer the structure of a MOB 
+
+%
+\begin{enumerate}
+  \item Estimate the model parameters jointly for all subjects in the current sample, starting with the full sample.
+  \item Assess the stability of the parameters with respect
+        to each available covariate.
+  \item If there is significant instability, split the sample
+        along the covariate with the strongest instability and in
+        the cutpoint leading to the highest improvement of the model fit.
+  \item Repeat steps 1--3 recursively in the resulting subsamples
+        until there are no more significant instabilities (or the
+    subsample becomes too small).
+\end{enumerate}
+%
 
 
 \todo[inline]{\textbf{Previous Papers on IRT and Rasch Models in Journal of School Psychology}
 
 Rasch and IRT models are often mentioned in this journal's papers as being used for scoring school assessments (e.g., Virginia Standards of Learning Assessments;  Oregon Assessment of Knowledge and Skills; Peabody individual achievement test, \cite{Luth92}).
 
-A general introduction to IRT in the journal is provided by \cite{AnthyDiPe16}. There are also papers describing extensions to mixure IRT models \cite{AyalySant17} and many-facet Rasch measurement (MFRM) approaches that allow controlling for rater effects \cite{StycyAntr21}. 
+A general introduction to IRT in the journal is provided by \cite{AnthyDiPe16}.%included
+There are also papers describing extensions to mixure IRT models \cite{AyalySant17}%included
+and many-facet Rasch measurement (MFRM) approaches that allow controlling for rater effects \cite{StycyAntr21}. 
 
-\cite{Mall97} assessed DIF by comparing Rasch model item difficulties of WISC-III subtests between 110 severely and profoundly deaf children, 110 matched nonreferred hearing children, and the WISC-III standardization sample (N = 2,200).}
+\cite{Mall97} assessed DIF by comparing Rasch model item difficulties of WISC-III subtests between 110 severely and profoundly deaf children, 110 matched nonreferred hearing children, and the WISC-III standardization sample (N = 2,200).%included
+}
 
 
 
 \newpage
-\section{Tutorial: Subgroup Detection in Mixed-Effects Models}
+\section{\edc{Application Example 1}: Subgroup Detection in Mixed-Effects Models}
 \label{sec:TutorialMixed}
 
 
 
 \subsection{Dataset}
 
-To illustrate the use of GLMM trees, we analyze a dataset from \cite{Demi09}, who evaluated long-term benefits of participation in Head Start. Head Start is a federally funded nationwide pre-school program for children from low-income families. \cite{Demi09} compared performance of siblings who differed in their participation in the program using data from the National Longitudinal Survey of Youth (NLSY; REF). 
+To illustrate the use of GLMM trees, we analyze a dataset from \cite{Demi09}, who evaluated long-term benefits of participation in Head Start. Head Start is a federally funded nationwide \todo{what nation?} pre-school program for children from low-income families. \cite{Demi09} compared performance of siblings who differed in their participation in the program using data from the National Longitudinal Survey of Youth (NLSY; REF). 
 
-The sample consists of 273 families with at least two children where at least one child participated in Head Start and at least one child did not participate in Head Start or any other preschool program. Data from children in those families who participated in another preschool program were excluded. As such, siblings who did not participate in Head Start serve as a natural control to assess the effects of participating in Head Start. As the outcome variable, we take the Peabody Picture Vocabulary Test (PPVT; REF) and model PPVT trajectories over time. As the timing metric, we took the square root of the child's age in years, which yielded a pattern of approximately linear increases over time.
+The sample consists of 273 families with at least two children, where at least one child participated in Head Start and at least one child did not participate in Head Start or any other preschool program. Data from children in those families who participated in another preschool program were excluded. As such, siblings who did not participate in Head Start serve as a natural control to assess the effects of participating in Head Start. As the outcome variable, we take the Peabody Picture Vocabulary Test (PPVT; REF) and model PPVT trajectories over time. As the timing metric, we took the square root of the child's age in years, which yielded a pattern of approximately linear increases over time.\todo{this would scare me a little as a reader: how would I know what to do/that I should do this?}
 
 Our dataset contains five family characteristics: The mother's score on the Armed Forced Qualification Test (AFTQ), adjusted for age; the families' income (averaged over the years for which data was available); race (Black, Hispanic or White); mother's years of completed education; mother's height. Note that the latter variable is one that should be completely irrelevant for predicting performance on a vocabulary test; it is included here to illustrate that the GLMM tree algorithm can fruitfully distinguish signal from noise variables. The dataset comprises data from families and children for whom complete data was available. 
 
@@ -91,16 +144,17 @@ We load the data and inspect the first rows:
 \end{Soutput}
 \end{Schunk}
 
-We inspect the complete dataset by plotting PPVT scores against age, separated by program participation: None (black) versus Head Start (red). To show the effect of age and Head Start participation, we fitted a mixed-effects model comprising their main and interaction effects. To account for the correlation between repeated assessments on the same child, we specified a random intercept. The results are presented in Figure~\ref{fig:global_lmm}, which shows that children participating in Head Start show slightly higher performance than their non-participating siblings and that this difference persists over time. This result agrees with the findings of \cite{Demi09}.
+We inspect the complete dataset by plotting PPVT scores against age, separated by program participation: None (black) versus Head Start (red). To show the effect of age and Head Start participation, we fitted a mixed-effects model comprising their main and interaction effects. To account for the correlation between repeated assessments on the same child, we specified a random intercept. The results are presented in Figure~\ref{fig:global_lmm}, which shows that children participating in Head Start show slightly higher performance than their non-participating siblings and that this difference \edc{is slightly diminished but} persists over time. This result agrees with the findings of \cite{Demi09}.
 
 \begin{figure}%
 \caption{}
 \begin{subfigure}{.7\textwidth}
-\includegraphics{MOB_paper-004}
+\includegraphics{_MOB_paper-004}
 \end{subfigure}
 \label{fig:global_lmm}
 \end{figure}%
 
+\fixme{code for figure not displayed on purpose? why only those particular x axis ticks?}
 
 \FloatBarrier
 \subsection{Linear mixed effects model tree}
@@ -130,11 +184,11 @@ Next, we plot the tree. With multiple fixed-effects predictors of interest, the 
 
 \begin{figure}%
 \caption{}
-\includegraphics{MOB_paper-007}
+\includegraphics{_MOB_paper-007}
 
 \vspace*{-3cm}
 
-\includegraphics{MOB_paper-008}
+\includegraphics{_MOB_paper-008}
 \label{fig:lmm_tree}
 \end{figure}%
 
@@ -158,9 +212,9 @@ Node & Program & PPVT at age 6 & PPVT at age 18\\
 \bottomrule
 \end{tabular}
 \end{table}
-To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 and 18. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit remains the same over time for the group with lower mother's AFTQ scores. The benefit increases over time for White children with higher mother's AFTQ scores. Strikingly, the benefit decreases over time for Black and Hispanic children with higher mother's AFTQ scores. These results correspond to the conclusions of \cite{Demi09}. 
+To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 \todo{x axis for age starts at 2?} and 18. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit remains the same over time for the group with lower mother's AFTQ scores. The benefit increases over time for White children with higher mother's AFTQ scores. Strikingly,\todo{possibly less extreme word like: Interestingly,} the benefit decreases over time for Black and Hispanic children with higher mother's AFTQ scores. These results correspond to the conclusions of \cite{Demi09}. \todo[inline]{Generally the effects are not large but the example is very clear and I like that it is an intervention effect. I suggest to state early before the figure that the effects are not large in this example but we are interested in the group differences; also try to make figure bigger and wider to make slopes more visible}
 
-To evaluate whether the detected subgroups indeed contribute to better predictions, we used cross validation. We separated the 258 families in the dataset into ten equally-sized folds. We took nine of the ten folds as a training dataset on which we fitted two models: an LMM tree (i.e., an LMM with subgroups) and an LMM without subgroups (comprising main and interaction effects of age and Head Start participation, and a random intercept with respect to child). We evaluated performance on the remaining folds, by computing and evaluating accuracy of the predictions. \todo{explain MSE and $R^2$} We repeated this procedure ten times, so that all folds were used as a test set once. The results are presented in Table~\ref{tab:performance}, which shows that LMM trees generalize well: They provide better predictive accuracy compared to LMMs, while implementing only few splits. 
+To evaluate whether the detected subgroups indeed contribute to better predictions, we used cross validation. We \edc{randomly} separated the 258 families in the dataset into ten equally-sized folds. We took nine of the ten folds as a training dataset on which we fitted two models: an LMM tree \edc{like the one shown above} (i.e., an LMM with subgroups \todo{necessary? confused me}) and an LMM without subgroups (comprising main and interaction effects of age and Head Start participation, and a random intercept with respect to child). We evaluated performance on the remaining folds by computing and evaluating accuracy of the predictions. \todo{explain MSE and $R^2$} We repeated this procedure ten times, so that all folds were used as a test set once. The results are presented in Table~\ref{tab:performance}, which shows that LMM trees generalize well: They provide better predictive accuracy compared to LMMs, while implementing only few splits. 
 
 
 
@@ -180,13 +234,13 @@ LMM & 258.233 & 71.451 & NA & 0.781\\
 \end{table}
 
 
-\todo[inline]{I am not sure this dataset is the best GLMM tree illustration, because visualized differences between subgroups are very small and perhaps the fixed-effect part is already too complex. Alternative: Do not focus on effect of Head Start, but use as partitioning variable. Then can also use data from more families (HS or none not needed), partition using child-level characteristics, and  model specification becomes simpler.}
+\todo[inline]{I am not sure this dataset is the best GLMM tree illustration, because visualized differences between subgroups are very small and perhaps the fixed-effect part is already too complex. Alternative: Do not focus on effect of Head Start, but use as partitioning variable. Then can also use data from more families (HS or none not needed), partition using child-level characteristics, and  model specification becomes simpler. -- response Caro: I like it, see comment above: try to prime that effects are not large}
 
 
 
 \newpage
 \FloatBarrier
-\section{Tutorial: Subgroup Detection in Rasch Models}
+\section{\edc{Application Example 2}: Subgroup Detection in Rasch Models}
 \label{sec:TutorialRasch}
 
 Using Rasch trees, we assess DIF for items on math and reading \todo{decide on subscale(s) to include} from the Self-Description Questionnaire \cite{Boyl94}. We use a dataset from the Early Childhood Longitudinal Study-Kindergarten class of 1998--1999 \citep[ECLS-K; ][]{NCES10}. Data were collected from 1,018 schools across the USA. Assessments took place from kindergarten through 8th grade. Here we focus on the 8th grade assessment, in which four SDQ-II items were administered to assess perceived interest and competence in reading, and another four to assess perceived interest and competence in math. Items are presented in Appendix~\ref{sec:AppendixA}. The items were rated by the children on a 4-point scale (“not at all true” through “very true”). We coded responses 1 and 2 as 0, and responses 3 and 4 as 1, to allow for fitting a Rasch model, which assumes binary responses. 
@@ -261,7 +315,6 @@ The resulting tree is presented in Figure~\ref{fig:math_tree}. The splitting nod
 \begin{figure}%
 \caption{Rasch tree for the four math items.}
 \begin{subfigure}{1.25\textwidth}
-\includegraphics{MOB_paper-018}
 \end{subfigure}
 \label{fig:math_tree}
 \end{figure}%
@@ -287,7 +340,6 @@ The resulting tree is presented in Figure~\ref{fig:read_tree}, which reveals a p
 \begin{figure}%
 \caption{Rasch tree for the four reading items.}
 \begin{subfigure}{1.25\textwidth}
-\includegraphics{MOB_paper-021}
 \end{subfigure}
 \label{fig:read_tree}
 \end{figure}
@@ -310,7 +362,7 @@ The resulting tree is presented in Figure~\ref{fig:read_tree}, which reveals a p
 
 
 
-\bibliography{MOB_paper}
+\bibliography{_MOB_paper}
 
 \todo{Add DOIs.}
 
