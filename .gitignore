@@ -24,3 +24,16 @@ MOB_paper-017.pdf
 MOB_paper-018.pdf
 MOB_paper-019.pdf
 MOB_paper-020.pdf
+
+## intermediate files produced by LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+
+## pdfs for text and figures because they can be reproduced from code
+.pdf
+
+
