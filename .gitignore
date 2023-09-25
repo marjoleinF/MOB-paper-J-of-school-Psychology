@@ -37,4 +37,5 @@ MOB_paper-020.pdf
 ## pdfs for text and figures because they can be reproduced from code
 *.pdf
 
-
+_MOB_paper.pdf
+_MOB_paper.tex
