@@ -25,17 +25,22 @@ MOB_paper-018.pdf
 MOB_paper-019.pdf
 MOB_paper-020.pdf
 
+_MOB_paper.pdf
+_MOB_paper.tex
+
 ## intermediate files produced by LaTeX
-*.tex
 *.aux
+*.bbl
+*.blg
+*.gz
 *.log
 *.out
 *.toc
-*.bbl
-*.blg
+*.tex
 
 ## pdfs for text and figures because they can be reproduced from code
 *.pdf
 
-_MOB_paper.pdf
-_MOB_paper.tex
+## rda files because they can be reproduced from code
+*.Rda
+
