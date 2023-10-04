@@ -1,0 +1,90 @@
+
+Using Rasch trees, we assess DIF for items on math and reading \todo{decide on subscale(s) to include} from the Self-Description Questionnaire \cite{Boyl94}. We use a dataset from the Early Childhood Longitudinal Study-Kindergarten class of 1998--1999 \citep[ECLS-K; ][]{NCES10}. Data were collected from 1,018 schools across the USA. Assessments took place from kindergarten through 8th grade. Here we focus on the 8th grade assessment, in which four SDQ-II items were administered to assess perceived interest and competence in reading, and another four to assess perceived interest and competence in math. Items are presented in Appendix~\ref{sec:AppendixA}. The items were rated by the children on a 4-point scale (“not at all true” through “very true”). We coded responses 1 and 2 as 0, and responses 3 and 4 as 1, to allow for fitting a Rasch model, which assumes binary responses. 
+
+<<echo=FALSE>>=
+SDQ_dat <- readRDS("ECLSK_SDQ.Rda")
+@
+
+We used three covariates as possible partitioning variables: Gender (1=Male; 2=Female), race (8 categories: 1=White, non-Hispanic; 2=Black or African-American, non-Hispanic; 3=Hispanic, race specified; 4=Hispanic, race not specified; 5=Asian; 6=Native Hawaiian or other Pasific Islander; 7= American Indian or Alaska native; 7=More than one race) and socio-economic status (range $-$5 to 3). \todo{Add more partitioning variables? This does increase number of splits. But could add one that should not have an effect, e.g., month of birth.} We analyze observations of children with complete data only, yielding a total sample size of \Sexpr{formatC(nrow(SDQ_dat), big.mark=",")}.
+
+
+We load the data and inspect the first three rows as follows:
+
+<<>>=
+SDQ_dat <- readRDS("ECLSK_SDQ.Rda")
+head(SDQ_dat, 3)
+@
+
+To fit Rasch trees, we use function \verb|raschtree| which is available from R package \textbf{psychotree}. However, the stopping criterion based on the Mantel–Haenszel effect size measure is implemented in R package \verb|raschtreeMH|, which we therefore use here. \todo{might be nice to implement the MH effect-size criterion in the psychotree package for this paper, currently it seems to interfere with plotting the tree}. It can be installed and loaded as follows:
+
+<<warning=FALSE, message=FALSE, eval=FALSE>>=
+devtools::install_github("mirka-henninger/raschtreeMH")
+library("raschtreeMH")
+@
+
+<<warning=FALSE, message=FALSE, echo=FALSE, eval=FALSE>>=
+library("raschtreeMH")
+@
+
+To fit a Rasch tree, we first create a \verb|data.frame| that contains the item responses and possible partitioning variables:
+
+<<eval=FALSE>>=
+math_items <- c("C7MTHBST", "C7MTHGD", "C7LIKMTH", "C7ENJMTH")
+part_vars <- c("GENDER", "RACE", "WKSESL")
+mydata <- SDQ_dat[ , part_vars]
+mydata$resp <- sapply(SDQ_dat[ , math_items], function(x) ifelse(x > 2, 1, 0)) 
+@
+
+Next, we apply function \verb|raschtree| and plot the result:
+
+<<eval=FALSE>>=
+stop_fun <- stopfun_mantelhaenszel(purification = "iterative", stopcrit = "C")
+math_tree <- raschtree(resp ~ ., data = mydata, stopfun = stop_fun)
+@
+
+<<eval=FALSE>>=
+plot(read_tree, gp = gpar(cex = .7))
+@
+
+The resulting tree is presented in Figure~\ref{fig:math_tree}. The splitting nodes show the $p$-value of the corresponding parameter stability tests. The terminal depict the node-specific item difficulties. The difficulties of items 1 (C7MTHBST: Math is one of my best subjects) and 3 (C7LIKMTH: I like math) appear relatively stable and show average difficulty in every subgroup. The difficulties of items 2 (C7MTHGD: I get good grades in math) and 4 (C7ENJMTH: I enjoy doing work in math) are always lower and higher, respectively, and also seem to vary more strongly. 
+
+
+
+\begin{figure}%
+\caption{Rasch tree for the four math items.}
+\begin{subfigure}{1.25\textwidth}
+<<fig=TRUE, echo=FALSE, width= 9, height=6, eval=FALSE>>=
+library("psychotree") ## needed for plotting, but interferes with stopfun_mantelhaenszel
+plot(math_tree, gp = gpar(cex = .7))
+detach("package:psychotree", unload = TRUE)
+@
+\end{subfigure}
+\label{fig:math_tree}
+\end{figure}%
+
+We repeat the procedure for the reading items:
+
+<<eval=FALSE>>=
+read_items <-  c("C7ENGBST", "C7GRDENG", "C7LIKRD", "C7ENJRD")
+mydata$resp <- sapply(SDQ_dat[ , read_items], function(x) ifelse(x > 2, 1, 0))
+read_tree <- raschtree(resp ~ ., data = mydata, stopfun = stop_fun)
+@
+
+<<eval=FALSE>>=
+plot(read_tree, gp = gpar(cex = .7))
+@
+
+The resulting tree is presented in Figure~\ref{fig:read_tree}, which reveals a pattern of difficulties and splits quite similar to Figure~\ref{fig:math_tree}.
+
+\begin{figure}%
+\caption{Rasch tree for the four reading items.}
+\begin{subfigure}{1.25\textwidth}
+<<fig=TRUE, width=9, height=6, echo=FALSE, eval=FALSE>>=
+library("psychotree") ## needed for plotting, interferes with stopfun_mantelhaenszel
+plot(read_tree, gp = gpar(cex = .7))
+detach("package:psychotree", unload = TRUE)
+@
+\end{subfigure}
+\label{fig:read_tree}
+\end{figure}
+
