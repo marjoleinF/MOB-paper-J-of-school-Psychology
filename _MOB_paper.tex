@@ -26,12 +26,11 @@
 
 \title{One Model May Not Fit All: Subgroup Detection Using MOB}
 \shorttitle{shorttitle}
-\author{Marjolein Fokkema, Mirka Henninger \& Carolin Strobl}
 
-%\authorsnames{Marjolein Fokkema$^1$ \& Carolin Strobl$^2$}
-%\authorsaffiliations{$^1$Leiden University, $^2$Universit\"at Z\"urich}
+\authorsnames{Marjolein Fokkema$^1$, Mirka Henninger$^2$ \& Carolin Strobl$^2$}
+\authorsaffiliations{$^1$Leiden University, $^2$Universit\"at Z\"urich}
 
-\abstract{Model-based recursive partitioning \citep[MOB,][]{ZeilyHoth08} is a flexible framework for detecting subgroups \edc{of persons showing different} effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity of intervention effects. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item-response theory models. In the first case study, we show how GLMM trees \citep{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to a dataset from a study of \citep{Demi09}, who compared longitudinal performance of siblings who did, and siblings who did not participate in the Head Start program. Using GLMM trees, we identify subgroups of families in which children show comparatively larger or smaller gains in performance following participation in Head Start. In a second case study, we show how Rasch trees \citep{StroyKopf15} can be used to detect subgroups with different item parameters in IRT models, \edc{i.e.~differential item functioning (DIF).
+\abstract{Model-based recursive partitioning \citep[MOB,][]{ZeilyHoth08} is a flexible framework for detecting subgroups \edc{of persons showing different} effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity of intervention effects. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item response theory models. In the first case study, we show how GLMM trees \citep{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to a dataset from a study of \citep{Demi09}, who compared longitudinal performance of siblings who did, and siblings who did not participate in the Head Start program. Using GLMM trees, we identify subgroups of families in which children show comparatively larger or smaller gains in performance following participation in Head Start. In a second case study, we show how Rasch trees \citep{StroyKopf15} can be used to detect subgroups with different item parameters in IRT models, \edc{i.e.~differential item functioning (DIF).
 DIF should be investigated before using test results for comparing groups, because undetected DIF can affect test fairness.} We show how a recently developed stopping criterion \citep{HennyDeba23} can be used to guide subgroup detection based on DIF effect sizes.\\}
 
 \usepackage{Sweave}
@@ -41,8 +40,6 @@ DIF should be investigated before using test results for comparing groups, becau
 
 
 \maketitle
-\todo[inline]{Marjolein: what document style for authorsnames? commented out}
-
 
 \todo[inline]{Target journal: \textit{Journal of School Psychology}. This Special Issue is on "Conceptual and Methodological Advances for Understanding Contextual, Identity, and Cultural Effects in Intervention Research". Submission deadline: October 31, 2023}
 
@@ -52,13 +49,13 @@ DIF should be investigated before using test results for comparing groups, becau
 \label{sec:Introduction}
 
 Model-based recursive partitioning \citep[MOB,][]{ZeilyHoth08} is a semi-parametric approach for detecting differences in the parameters of a statistical
-model between groups of persons. This method is a generalization of the principle of recursive partitioning, that is also used in classification and regression trees \citet{Breetal:1984}. 
+model between groups of persons. This method is a generalization of the principle of recursive partitioning, that is also used in classification and regression trees \citep{Breetal:1984}. 
 In classification and regression trees, the aim is to detect groups of persons, specified by (combinations of) covariates, that differ in a response variable. An example could be that children who are highly motivated and have good reading skills show higher average math exam grades. 
 MOB generalizes this idea by identifying groups of persons, specified by (combinations of) covariates, that differ in a the parameters of a statistical model. An example could be that children who are highly motivated and have good reading skills show higher slopes in a regression model relating the time spent studying to math exam grades. 
 
-The framework of MOB is very flexible and can be applied in combination with a variety of statistical models, such as linear and generalized linear regression \citep{KopAugStr:2013,ZeilyHoth08} or models for paired-comparison data \citep{StrWicZei:2011:JoEaBS}. In this article, we will highlight two such combinations that we consider particularly relevant for research in school psychology: MOB for mixed-effects models \cite{FokkySmit18} and for models from Rasch measurement and Item Response Theory \citep[IRT,][]{StrKopZei:2015:P,KomStrZei:2017:EaPM,HenDebStr:2023:EPM}. Mixed-effects models become relevant whenever data are collected in repeated measures or nested data structures, for example when children are tested at several time points (so that time points are nested in children) and/or when children from different classes from different schools (so that children are nested in classes, which are again nested in schools) participate in a study. In application example 1 we will illustrate how MOB can be used to detect subgroup-specific intervention effects while taking into account the nested data structure. 
+The framework of MOB is very flexible and can be applied in combination with a variety of statistical models, such as linear and generalized linear regression \citep{KopAugStr:2013,ZeilyHoth08} or models for paired-comparison data \citep{StrWicZei:2011:JoEaBS}. In this article, we will highlight two such combinations that we consider particularly relevant for research in school psychology: MOB for mixed-effects models \citep{FokkySmit18} and for models from Rasch measurement and Item Response Theory \citep[IRT,][]{StrKopZei:2015:P,KomStrZei:2017:EaPM,HenDebStr:2023:EPM}. Mixed-effects models become relevant whenever data are collected in repeated measures or nested data structures, for example when children are tested at several time points (so that time points are nested in children) and/or when children from different classes from different schools (so that children are nested in classes, which are again nested in schools) participate in a study. In application example 1 we will illustrate how MOB can be used to detect subgroup-specific intervention effects while taking into account the nested data structure. 
 
-While for this first application example we assume that the administered test \todo{should we call a psychological test a test/an instrument/??? to distinguish it from the verb and noun for statistical test?} has already been thoroughly validated, for application example 2 we go back in the research process to the point where a new test is administered to a validation sample. Before using the test in our research, we need to make sure that test results are comparable, for example between children of different genders. If certain items pose an advantage or disadvantage to either group, they are said to violate measurement invariance or exhibit differential item functioning (DIF). In order to test for DIF in the framework of Item Response Theory or Rasch modelling \cite{AnthyDiPe16,DebStrZei:2022:CRC,Mall97}, groups of persons are compared with respect to the item parameters for their specific group. This can be done in a way that allows to detect DIF on top of any true group differences in ability. While many standard approaches for testing DIF are limited to comparing typically two pre-specified groups at a time, we will show in application example 2 that MOB more flexibly allows to detect groups of persons with different item parameters in a data-driven 
+While for this first application example we assume that the administered test \todo{should we call a psychological test a test/an instrument/??? to distinguish it from the verb and noun for statistical test? (Mirka: I like the term instrument to distinguish it from a statistical test)} has already been thoroughly validated, for application example 2 we go back in the research process to the point where a new test is administered to a validation sample. Before using the test in our research, we need to make sure that test results are comparable, for example between children of different genders. If certain items pose an advantage or disadvantage to either group, they are said to violate measurement invariance or exhibit differential item functioning (DIF). In order to test for DIF in the framework of Item Response Theory or Rasch modelling \citep{AnthyDiPe16,DebStrZei:2022:CRC,Mall97}, groups of persons are compared with respect to the item parameters for their specific group. This can be done in a way that allows to detect DIF on top of any true group differences in ability. While many standard approaches for testing DIF are limited to comparing typically two pre-specified groups at a time, we will show in application example 2 that MOB more flexibly allows to detect groups of persons with different item parameters in a data-driven 
 way. 
 
 In the following section, we will give a short introduction into the algorithm and statistical concepts behind MOB. Readers interested in learning more about its predecessor method, classification and regression trees, are referred to the introduction by \citet{StrMalTut:2009:PM}. An alternative framework for detecting groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with covariates. A comparison of both approches is given by \citet{FriStrZei:2014}.
@@ -66,7 +63,7 @@ In the following section, we will give a short introduction into the algorithm a
 
 \section{The Algorithm Behind MOB}
 
-What you see displayed in Figures~\ref{fig:lmm_tree}, \ref{fig:math_tree}, and \ref{fig:read_tree}\todo{adjust if raschtree example changes}, which will be explained in detail in the application example sections, is the result of the MOB algorithm for a linear mixed-effects model (Figure~\ref{fig:lmm_tree}) and for a binary Rasch model (Figures~\ref{fig:math_tree} and \ref{fig:read_tree}). These figures share the tree-structure in the upper part, but differ in their lower part. The starting point of the tree structure is at the very top of each tree. The very top of each tree is called the root node, so what you see are actually ``upside down'' trees with the root at the top and the branches at the 
+What you see displayed in Figures~\ref{fig:lmm_tree}, \ref{fig:math_tree}, and \ref{fig:read_tree}\todo{adjust if raschtree example changes (Mirka: maybe it would be helpful to have a simplified figure of a GLMERtree and a Raschtree early in the manuscript already, so we can refer to it here?)}, which will be explained in detail in the application example sections, is the result of the MOB algorithm for a linear mixed-effects model (Figure~\ref{fig:lmm_tree}) and for a binary Rasch model (Figures~\ref{fig:math_tree} and \ref{fig:read_tree}). These figures share the tree-structure in the upper part, but differ in their lower part. The starting point of the tree structure is at the very top of each tree. The very top of each tree is called the root node, so what you see are actually ``upside down'' trees with the root at the top and the branches at the 
 bottom. The root node at the very top contains the entire sample of persons in the data set. From there, the persons are divided into subgroups.
 
 The subgroups are defined by the covariates that are used for splitting and together with cutpoints in those covariates. For example, in Figure~\ref{fig:lmm_tree} for the metric covariates \texttt{AFTQ} and \texttt{Income} a numeric cutpoint has been selected by the MOB algorithm to separate the groups. The algorithm has identified this cutpoint as being the location of the strongest parameter difference between the two resulting groups. The categorical covariate \texttt{Race}, which was coded in three categories in this example, has been divided into two groups of categories: Black and Hispanic vs.~White. For a binary covariate, \todo{like ... -- add name if is there one in the other example?} 
@@ -77,18 +74,16 @@ The fact that the Figures display more than one end node already means that one 
 
 The way the variable selection and cutpoint selection steps are separated in modern classification and regression tree and MOB algorithms, including the ones used here, distinguish them from the traditional classification and regression tree algorithms of \citet{Breetal:1984} and \citet{Qui:1993}. The traditional algorithms performed variable and cutpoint selection in one step. However, this leads to an undesirable behavior called variable selection bias. It means that the traditional algorithms prefer variables offering more cutpoints in the selection process -- regardless of their true information content. An algorithm that still has this problem is, for example, the \texttt{rpart} algorithm in R, based on the original CART algorithm by \citet{Breetal:1984}. Modern algorithms for classification and regression trees that have solved this problem are the unbiased approaches \texttt{QUEST} \citep{LohShi:1997}, which is available in SPSS, and \texttt{ctree} \citep{Hotetal:2006}, available in R in the \texttt{party} and \texttt{partykit} packages \citep{partykit:pkg}. The latter forms the basis for all MOB approaches presented in this paper. 
 
-Once there are no more covariates that show a significant structural change in any node, the MOB algorithm stops splitting. In this way, the MOB algorithm selects only those variables that are relevant for distinguishing the groups, i.e., it performs automatic variable selection. Moreover, the trees will not grow as large as possible, but will stop when no more significant structural change is detected. This is the second difference between the modern classification and regression tree and MOB algorithms used here, compared to traditional classification and regression tree algorithms like those of \citet{Breetal:1984} and \citet{Qui:1993}: While the traditional algorithms grew very large trees and then cut them back by means of so called pruning, the framework employed here is based on statistical significance tests and party also on effect size measures (see application example 2) to stop the trees already in the growing phase when no more significant change can be detected. Other stopping criteria are based on the number of persons in the end nodes. These crieria ensure that the sample sizes in the end nodes are large enough to estimate the statistical model in each end node.\todo{we should discuss this in the application examples; there are some defaults but for models with many parameters it might make sense to increase them}
+Once there are no more covariates that show a significant structural change in any node, the MOB algorithm stops splitting. In this way, the MOB algorithm selects only those variables that are relevant for distinguishing the groups, i.e., it performs automatic variable selection. Moreover, the trees will not grow as large as possible, but will stop when no more significant structural change is detected. This is the second difference between the modern classification and regression tree and MOB algorithms used here, compared to traditional classification and regression tree algorithms like those of \citet{Breetal:1984} and \citet{Qui:1993}: While the traditional algorithms grew very large trees and then cut them back by means of so called pruning, the framework employed here is based on statistical significance tests and partly also on effect size measures (see application example 2) to stop the trees already in the growing phase when no more significant change can be detected. Other stopping criteria are based on the number of persons in the end nodes. These crieria ensure that the sample sizes in the end nodes are large enough to estimate the statistical model in each end node.\todo{we should discuss this in the application examples; there are some defaults but for models with many parameters it might make sense to increase them}
 
 In summary, the rationale of a MOB algorithm consists of the following steps:
 
 \todo{why are the spaces so big? I didn't change the enumerate command}
 \begin{enumerate}
-  \item The model parameters are first estimated jointly for all persons in the current node, starting with the full sample.
-  \item Structural change in the model parameters is assessed with respect to each available covariate.
-  \item If there is significant structural change, groups are split along the covariate with the strongest change and using the optimal cutpoint.
-  \item Steps 1--3 are repeated recursively in the resulting groups
-        until there is no more significant structural change (or the
-   groups becomes too small).
+\item The model parameters are first estimated jointly for all persons in the current node, starting with the full sample.
+\item Structural change in the model parameters is assessed with respect to each available covariate.
+\item If there is significant structural change, groups are split along the covariate with the strongest change and using the optimal cutpoint.
+\item Steps 1--3 are repeated recursively in the resulting groups until there is no more significant structural change (or the groups becomes too small).
 \end{enumerate}
 
 For more details on the statistical theory behind unbiased classification and regression trees and MOB, see \citet{Hotetal:2006,StrMalTut:2009:PM,StroyKopf15}.  
@@ -121,13 +116,15 @@ When mixed-effects models are combined with MOB, ...
 
 Before being able to use a psychological or educational test for comparing different groups of persons in a fair way, different assumptions of the measurement model have to be checked. In the framework of IRT and Rasch measurement, test items are typically investigated with respect item misfit, multidimensionality and other violations of the measurement model \citep[cf., e.g.,][for an introduction]{DebStrZei:2022:CRC}. Another assumption that is particularly crucial for the comparability of test scores between groups is measurement invariance. Items that violate measurement invariance by showing different measurement properties for different groups of participants display DIF.
 
-MOB can be used to detect DIF by means of searching for covariates that display structural change in the item parameters of the measurement model. For the Rasch measurement model, the R function for conducting the MOB analysis is the \texttt{raschtree} function from R package \texttt{psychotree} \citep{StroyKopf15} \todo{should we cite the package too or only the paper?} The usage of this function will be illustration in application example 2. We will see that, just like for the mixed-effects model trees \todo{use same names for methods everywhere}, we need to specify which variables go into the parametric mode. In the case of the Rasch model, this will be the test items. Moreover, we need to specify, which variables are made available to the MOB algorithm for selecting relevant splitting variables and cutpoints. 
+MOB can be used to detect DIF by means of searching for covariates that display structural change in the item parameters of the measurement model. For the Rasch measurement model, the R function for conducting the MOB analysis is the \texttt{raschtree} function from R package \texttt{psychotree} \citep{StroyKopf15} \todo{should we cite the package too or only the paper?} The usage of this function will be illustrated in application example 2. We will see that, just like for the mixed-effects model trees\todo{use same names for methods everywhere}, we need to specify which variables are part of the parametric model. In the case of the Rasch model, this will be the test items. Moreover, we need to specify, which variables are made available to the MOB algorithm for selecting relevant splitting variables and cutpoints. 
 
-If one joint Rasch model holds for the entire sample, i.e., if there is no DIF a Rasch tree should show no splits. However, in certain settings in educational research, such as large scale assessements, very large sample sizes are available for testing for DIF. Large sample sizes are good for detecting even small effects or model violations with a high statistical power. The same holds for the statistical tests used for detecting parameter change in the MOB algorithm, so that in larger samples even very small parameter differences can be detected with large samples. However, in DIF detection this may mean that even very small DIF effects, that in practice can be considered ignorable, will be detected if only the sample is big enough. As we will illustrate in the first part of application example 2, for a large sample of university students \todo{are only students in the sample?} who have taken a quiz to test their general knowledge, this can lead to very large trees, that are hard to interpret and contain splits that would not be considered relevant by measurement experts. Therefore, an extension of Rasch trees has been suggested by \citet{HennyDeba23} based on the Mantel-Haenszel effect size measure for DIF. \citet{HolTha:1985} have suggested an intuitive classification of DIF effect sizes based in the Mantel-Haenszel statistic, that is being widely used in educational testing. In this classification, category A stands for negligible DIF (small effect size or not statistically significant), B for medium DIF (neither A nor C), and C for large DIF (large effect size and statistically significant). \citet{HennyDeba23} have incorporated this classification as an additional stopping criterion for Rasch trees, so that the user can decide, for example, that a split should only be conducted if the detected DIF is of category B or C, while negligible DIF of category A should be ignored.\todo{Mirka: is it A vs. B,C or A,B vs. C by default?} 
+If one joint Rasch model holds for the entire sample, i.e., if there is no DIF, a Rasch tree should show no splits. However, in certain settings in educational research, such as large scale assessements, very large sample sizes are available for testing for DIF. Large sample sizes are good for detecting even small effects or model violations with a high statistical power. The same holds for the statistical tests used for detecting parameter change in the MOB algorithm, so that in larger samples even very small parameter differences can be detected with large samples. However, in DIF detection this may mean that even very small DIF effects, that in practice can be considered ignorable, will be detected if only the sample is big enough. As we will illustrate in the first part of application example 2, for a large sample of university students who have taken a quiz to test their general knowledge, this can lead to very large trees, that are hard to interpret and contain splits that would not be considered relevant by measurement experts. Therefore, an extension of Rasch trees has been suggested by \citet{HennyDeba23} based on the Mantel-Haenszel effect size measure for DIF. \citet{HolTha:1985} have suggested an intuitive classification of DIF effect sizes based in the Mantel-Haenszel statistic, that is being widely used in educational testing. In this classification, category A stands for negligible DIF (small effect size or not statistically significant), B for medium DIF (neither A nor C), and C for large DIF (large effect size and statistically significant). \citet{HennyDeba23} have incorporated this classification as an additional stopping criterion for Rasch trees, so that the user can decide, for example, that a split should only be conducted if the detected DIF is of category B or C, while negligible DIF of category A should be ignored. 
 
-As we will show in application example 2, for large sample sizes this can be very helpful because it results in shorter trees that are easier to interpret and contain only splits corresponding to DIF effect sizes considered relevant in practice. Together with a purification step \citet[see][for details]{HennyDeba23}, the Mantel-Haenszel classification can also be used for highlighting those items that show DIF with respect to certain groups of persons graphically. This can help generate hypothesis about the sources of DIF, as we will ilustrate in application example 2, and can also aid the decision how to proceed with the DIF items. For example, items that show DIF between different language groups can often be improved by means of making sure that in all translations the meaning is as similar as possible, that the words used in the different languages are equally frequently used, etc. In other situations, sources of DIF might be harder to eliminate, so that often DIF items are excluded from a test. Either way, the measurement model needs to be refitted and its assumptions checked again after the final set of items has been decided upon and, in the case of modified items, administered again. 
+As we will show in application example 2, for large sample sizes this can be very helpful because it results in shorter trees that are easier to interpret and contain only splits corresponding to DIF effect sizes considered relevant in practice. Together with a purification step \citep[see][for details]{HennyDeba23}, the Mantel-Haenszel classification can also be used for highlighting those items that show DIF with respect to certain groups of persons graphically. This can help generate hypothesis about the sources of DIF, as we will ilustrate in application example 2, and can also aid the decision how to proceed with the DIF items. 
+\todo[inline]{following text from Caro can be used here or later after example 2 or in discussion}
+For example, items that show DIF between different language groups can often be improved by means of making sure that in all translations the meaning is as similar as possible, that the words employed in the translations for the different languages are equally frequently used, etc. In other situations, sources of DIF might be harder to eliminate, so that often DIF items are excluded from a test. Either way, the measurement model needs to be refitted and its assumptions checked again after the final set of items has been decided upon and, in the case of modified items, administered again. 
 
-Another important aspect to keep in mind is that DIF can be caused by one or more items measuring a secondary dimension in addition to the dimension that is intended to be measured by the test. This would be the case in test inteded to measure math aptitude containing pure algebra problems as well as story problems. Students whose native language is not the same as the test language can have disadvantage in answering the story problems, for example when they contain seldomly used words. These items will then show DIF between native and non-native speakers. When encountering this, the test developers will have to decide whether the items with story problems should be excluded from the test, whether they can be improved, e.g., by using more frequently used words, or whether the test should be considered two-dimensional rather than one-dimensional \citep[see also][for a discussion of the connection between DIF and multidimensionality]{Ack:1992,Stretal:2021:APM}.
+Another important aspect to keep in mind is that DIF can be caused by one or more items measuring a secondary dimension in addition to the dimension that is intended to be measured by the test. This would be the case in instruments intended to measure math aptitude containing pure algebra problems as well as story problems. Students whose native language is not the same as the test language can have a disadvantage in answering the story problems, for example when they contain seldomly used words. These items will then show DIF between native and non-native speakers. When encountering this, the test developers will have to decide whether the items with story problems should be excluded from the test, whether they can be improved, e.g., by using more frequently used words, or whether the test should be considered two-dimensional rather than one-dimensional \citep[see also][for a discussion of the connection between DIF and multidimensionality]{Ack:1992,Stretal:2021:APM}.
 
 We will now illustrate how to use the R packages \texttt{glmertree} and \texttt{psychotree} to conduct the MOB analyses. 
 
@@ -146,7 +143,7 @@ We will now illustrate how to use the R packages \texttt{glmertree} and \texttt{
 
 To illustrate the use of GLMM trees, we analyze a dataset from \cite{Demi09}, who evaluated long-term benefits of participation in Head Start. Head Start is a federally funded nationwide \todo{what nation?} pre-school program for children from low-income families. \cite{Demi09} compared performance of siblings who differed in their participation in the program using data from the National Longitudinal Survey of Youth (NLSY; REF). 
 
-The sample consists of 273 families with at least two children, where at least one child participated in Head Start and at least one child did not participate in Head Start or any other preschool program. Data from children in those families who participated in another preschool program were excluded. As such, siblings who did not participate in Head Start serve as a natural control to assess the effects of participating in Head Start. As the outcome variable, we take the Peabody Picture Vocabulary Test (PPVT; REF) and model PPVT trajectories over time. As the timing metric, we took the square root of the child's age in years, which yielded a pattern of approximately linear increases over time.\todo{this would scare me a little as a reader: how would I know what to do/that I should do this?}
+The sample consists of 273 families with at least two children, where at least one child participated in Head Start and at least one child did not participate in Head Start or any other preschool program. Data from children in those families who participated in another preschool program were excluded. As such, siblings who did not participate in Head Start serve as a natural control to assess the effects of participating in Head Start. As the outcome variable, we take the Peabody Picture Vocabulary Test (PPVT; REF) and model PPVT trajectories over time. As the timing metric, we took the square root of the child's age in years, which yielded a pattern of approximately linear increases over time.\todo{this would scare me a little as a reader: how would I know what to do/that I should do this? (Mirka: Maybe we can add that the sqrt or the log is a typical way to model trajectories that first increase rapidly, but then later increase more slowly?)}
 
 Our dataset contains five family characteristics: The mother's score on the Armed Forced Qualification Test (AFTQ), adjusted for age; the families' income (averaged over the years for which data was available); race (Black, Hispanic or White); mother's years of completed education; mother's height. Note that the latter variable is one that should be completely irrelevant for predicting performance on a vocabulary test; it is included here to illustrate that the GLMM tree algorithm can fruitfully distinguish signal from noise variables. The dataset comprises data from families and children for whom complete data was available. 
 
@@ -184,6 +181,7 @@ We inspect the complete dataset by plotting PPVT scores against age, separated b
 \FloatBarrier
 \subsection{Linear mixed effects model tree}
 
+\todo[inline]{I (Mirka) am confused: the nested structure in this example is timepoints (age) within children? Therefore, ChildID is the cluster-variable.  But then, there should be residual errors between the two children from the same family? In the text it says that this is accounted for by the random intercept, but I don't think this is the case (but maybe I am wrong?). Is it maybe accounted for by the cluster argument that is also said to ChildID? To me, the model specification is not yet clear from the text. Plus: If I am right, and the cluster is the child and the timepoints are on Level-1, I think all the covariates are on Level-2 (child level), and then maybe we should comment on the Type-I error problem?}
 We now test whether the intercepts and slopes of the two regression lines differ as a function of the partitioning variables, using function \verb|lmertree| from R package \textbf{glmertree}:
 
 \begin{Schunk}
@@ -195,9 +193,10 @@ We now test whether the intercepts and slopes of the two regression lines differ
 \end{Sinput}
 \end{Schunk}
 
-With the first argument, we specified the model \verb|formula|, which has three parts separated by vertical bars: The left part (\verb|PPVT ~ Program*Age|) specifies the response variable, followed by a tilde (\verb|~|) and the fixed-effects predictors of relevance. The middle part (\texttt{1|ChildID}) specified the random effects. The right part (\verb|AFTQ + Race + Income + Mom_edu_yrs + Mom_height|) specified the partitioning variables: covariates that may possibly affect the values of the fixed-effects parameters. 
+With the first argument, we specified the model \verb|formula|, which has three parts separated by vertical bars: The left part (\verb|PPVT ~ Program*Age|) specifies the response variable, followed by a tilde (\verb|~|) and the fixed-effects predictors of relevance. The middle part (\texttt{1|ChildID}) specified the random effects\todo{(Mirka) Maybe add information that this is for each child, average DV across timepoints}. The right part (\verb|AFTQ + Race + Income + Mom_edu_yrs + Mom_height|) specified the partitioning variables: covariates that may possibly affect the values of the fixed-effects parameters. 
 
-With the second argument, we specified the dataset which contain the variables. Because we are dealing with repeated measurements on the same children, we additionally specified that the parameter stability tests should be performed on the child level using the \verb|cluster| argument. Using the default observation-level parameter stability tests may artificially inflate power. Finally, because we want to retain large enough subgroups, we specified that the minimum number of observations in a terminal node should be 250.
+\todo[inline]{I (Mirka) am not sure what exactly the cluster argument does. Maybe Marjolein you have more information from your work with Achim. But my knowledge/intuition is that it has something to do with clustered covariances, so maybe it accounts for the sibling structure, but I don't think it accounts for the level of the predictor variables.}
+With the second argument, we specified the dataset which contain the variables. Because we are dealing with repeated measurements on the same children, we additionally specified that the parameter stability tests should be performed on the child level using the \verb|cluster| argument. Using the default observation-level parameter stability tests may artificially inflate power\todo{Mirka: I'd rather say it has an inflated type-I error rate.}. Finally, because we want to retain large enough subgroups, we specified that the minimum number of observations in a terminal node should be 250.
 
 Next, we plot the tree. With multiple fixed-effects predictors of interest, the default plots may become too crowded or difficult to interpret. We therefore specify \verb|type = "simple"| to facilitate interpretation, and using the \verb|nodesize_level| argument, we specified that the sample size printed above every terminal node should count the number of children, not the number of individual observations:
 
@@ -237,7 +236,7 @@ Node & Program & PPVT at age 6 & PPVT at age 18\\
 \bottomrule
 \end{tabular}
 \end{table}
-To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 \todo{x axis for age starts at 2?} and 18. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit remains the same over time for the group with lower mother's AFTQ scores. The benefit increases over time for White children with higher mother's AFTQ scores. Strikingly,\todo{possibly less extreme word like: Interestingly,} the benefit decreases over time for Black and Hispanic children with higher mother's AFTQ scores. These results correspond to the conclusions of \cite{Demi09}. \todo[inline]{Generally the effects are not large but the example is very clear and I like that it is an intervention effect. I suggest to state early before the figure that the effects are not large in this example but we are interested in the group differences; also try to make figure bigger and wider to make slopes more visible}
+To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 \todo{x axis for age starts at 2?} and 18. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit remains the same over time for the group with lower mother's AFTQ scores. The benefit increases over time for White children with higher mother's AFTQ scores. Strikingly,\todo{possibly less extreme word like: Interestingly,} the benefit decreases over time for Black and Hispanic children with higher mother's AFTQ scores. These results correspond to the conclusions of \cite{Demi09}. \todo[inline]{Generally the effects are not large but the example is very clear and I like that it is an intervention effect. I suggest to state early before the figure that the effects are not large in this example but we are interested in the group differences; also try to make figure bigger and wider to make slopes more visible; (Mirka): I think the main effect of the intervention and the interaction effect is not too small, but it is hard to see because the age effect is so pronounced in this example. Would it be an option to only use the intervention effect in the end nodes? }
 
 To evaluate whether the detected subgroups indeed contribute to better predictions, we used cross validation. We \edc{randomly} separated the 258 families in the dataset into ten equally-sized folds. We took nine of the ten folds as a training dataset on which we fitted two models: an LMM tree \edc{like the one shown above} (i.e., an LMM with subgroups \todo{necessary? confused me}) and an LMM without subgroups (comprising main and interaction effects of age and Head Start participation, and a random intercept with respect to child). We evaluated performance on the remaining folds by computing and evaluating accuracy of the predictions. \todo{explain MSE and $R^2$} We repeated this procedure ten times, so that all folds were used as a test set once. The results are presented in Table~\ref{tab:performance}, which shows that LMM trees generalize well: They provide better predictive accuracy compared to LMMs, while implementing only few splits. 
 
@@ -259,7 +258,7 @@ LMM & 258.233 & 71.451 & NA & 0.781\\
 \end{table}
 
 
-\todo[inline]{I am not sure this dataset is the best GLMM tree illustration, because visualized differences between subgroups are very small and perhaps the fixed-effect part is already too complex. Alternative: Do not focus on effect of Head Start, but use as partitioning variable. Then can also use data from more families (HS or none not needed), partition using child-level characteristics, and  model specification becomes simpler. -- response Caro: I like it, see comment above: try to prime that effects are not large}
+\todo[inline]{I am not sure this dataset is the best GLMM tree illustration, because visualized differences between subgroups are very small and perhaps the fixed-effect part is already too complex. Alternative: Do not focus on effect of Head Start, but use as partitioning variable. Then can also use data from more families (HS or none not needed), partition using child-level characteristics, and  model specification becomes simpler. -- response Caro: I like it, see comment above: try to prime that effects are not large -- response Mirka: I think that's okay. Only if you had data at hand that is not longitudinal (rather students in classes/schools), with covariates on Level-1, I would opt for that because it doesn't have the Level-2 splitting issue. }
 
 
 
@@ -268,109 +267,151 @@ LMM & 258.233 & 71.451 & NA & 0.781\\
 \section{\edc{Application Example 2}: Subgroup Detection in Rasch Models}
 \label{sec:TutorialRasch}
 
-Using Rasch trees, we assess DIF for items on math and reading \todo{decide on subscale(s) to include} from the Self-Description Questionnaire \cite{Boyl94}. We use a dataset from the Early Childhood Longitudinal Study-Kindergarten class of 1998--1999 \citep[ECLS-K; ][]{NCES10}. Data were collected from 1,018 schools across the USA. Assessments took place from kindergarten through 8th grade. Here we focus on the 8th grade assessment, in which four SDQ-II items were administered to assess perceived interest and competence in reading, and another four to assess perceived interest and competence in math. Items are presented in Appendix~\ref{sec:AppendixA}. The items were rated by the children on a 4-point scale (“not at all true” through “very true”). We coded responses 1 and 2 as 0, and responses 3 and 4 as 1, to allow for fitting a Rasch model, which assumes binary responses. 
+\begin{itemize}
+\item Example Rasch tree: Data from SPISA (data from Trepte \& Verbeet)
+\item take the subsample of students (only students), and a random subsample of 5000 respondents (seed 04102023)
+\item items could probably appear in Appendix??
+\begin{itemize}
+\item Which painter created this painting? – Andy Warhol.
+\item What do these four buildings have in common? – All four were designed by the same architects.
+\item Roman numbers: What is the meaning of CLVI? – 156.
+\item What was the German movie with the most viewers since 1990? – Der Schuh des Manitu.
+\item In which TV series was the US president portrayed by an African American actor for a long time? – 24.
+\item What is the name of the bestselling novel by Daniel Kehlmann? – Die Vermessung der Welt (Measuring The World).
+\item Which city is the setting for the novel ‘Buddenbrooks’? – Lübeck.
+\item In which city is this building located? – Paris.
+\item Which one of the following operas is not by Mozart? – Aida.
+\end{itemize}
+\end{itemize}
+
+\todo[inline]{at Caro: Ich habe die Daten (glaube ich) mal von dir bekommen (\texttt{spisa\_ges.RData}) und die Item-Formulierungen habe ich aktuell aus dem psychotree Paket. Stimmt das so? Ich glaube, der Originaltest hatte mehrere parallele Skalen, zumindest sind in dem PDF/BUCH von Trepte sehr viel mehr, und sehr ähnliche Items enthalten. Das könnten wir vielleicht nochmal nachgucken.}
+
+We load the data and inspect the first rows. there are several covariates: age (continuous), gender (male, female, missing), area (Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, Sports) and 9 items from the culture scale (true/false 0/1). 
 
 
-We used three covariates as possible partitioning variables: Gender (1=Male; 2=Female), race (8 categories: 1=White, non-Hispanic; 2=Black or African-American, non-Hispanic; 3=Hispanic, race specified; 4=Hispanic, race not specified; 5=Asian; 6=Native Hawaiian or other Pasific Islander; 7= American Indian or Alaska native; 7=More than one race) and socio-economic status (range $-$5 to 3). \todo{Add more partitioning variables? This does increase number of splits. But could add one that should not have an effect, e.g., month of birth.} We analyze observations of children with complete data only, yielding a total sample size of 7,417.
 
-
-We load the data and inspect the first three rows as follows:
 
 \begin{Schunk}
 \begin{Sinput}
- SDQ_dat <- readRDS("ECLSK_SDQ.Rda")
- head(SDQ_dat, 3)
+ head(covar_data)
 \end{Sinput}
 \begin{Soutput}
-   C7MTHBST C7ANGRY C7LIKRD C7WRYTST C7MTHGD C7LONLY C7ENGBST C7SAD C7LIKMTH
-2         4       4       4        2       4       2        4     3        4
-10        4       1       4        2       4       1        4     1        4
-16        3       3       1        2       3       1        4     1        4
-   C7WRYWEL C7ENJRD C7WRYFIN C7ENJMTH C7WRYHNG C7GRDENG C7ASHAME GENDER RACE
-2         4       4        4        3        2        3        4      2    1
-10        1       3        1        4        1        4        1      2    1
-16        2       1        2        4        1        4        1      1    1
-   WKSESL T6INTERN T6EXTERN T6INTERP T6CONTRO
-2    1.56     1.50     1.00      4.0     3.75
-10   1.41     1.25     1.50      4.0     4.00
-16  -2.93     1.50     2.33      2.8     3.00
+       Age Gender                Area
+445472  28   Male  Language & Culture
+167408  26 Female         Engineering
+422161  25   Male  Language & Culture
+350734  27   Male         Engineering
+570206  23   Male \nMedicine & Health
+265570  21 Female                Arts
+\end{Soutput}
+\begin{Sinput}
+ head(culture_scale)
+\end{Sinput}
+\begin{Soutput}
+     i27 i28 i29 i30 i31 i32 i33 i34 i35
+[1,]   1   1   0   0   1   1   1   1   1
+[2,]   1   0   1   0   0   0   1   1   1
+[3,]   1   1   1   0   1   1   1   1   1
+[4,]   0   1   0   1   0   1   1   0   1
+[5,]   1   1   0   1   1   1   0   1   0
+[6,]   1   1   0   1   1   0   1   1   1
 \end{Soutput}
 \end{Schunk}
 
-To fit Rasch trees, we use function \verb|raschtree| which is available from R package \textbf{psychotree}. However, the stopping criterion based on the Mantel–Haenszel effect size measure is implemented in R package \verb|raschtreeMH|, which we therefore use here. \todo{might be nice to implement the MH effect-size criterion in the psychotree package for this paper, currently it seems to interfere with plotting the tree}. It can be installed and loaded as follows:
+We create a dataset \texttt{dat\_SPISA} that contains the data of the covariate and the item responses from the culture scale. By assigning the whole scale to the dataset using \texttt{\$}, we can later access item responses from all items using \texttt{\$culture}. 
+\begin{Schunk}
+\begin{Sinput}
+ dat_SPISA <- covar_data
+ dat_SPISA$culture <- culture_scale
+\end{Sinput}
+\end{Schunk}
+
+The Rasch tree can be fitted with the function \texttt{raschtree} from the R package \texttt{psychotree}. We use the typical formula syntax with the item responses of the culture scale on the left hand side of $\sim$, and the covariates on the right hand side. 
+
+
+
+\begin{Schunk}
+\begin{Sinput}
+ library(psychotree)
+ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
+                                data = dat_SPISA)
+\end{Sinput}
+\end{Schunk}
+
+We can plot the Raschtree using the plot function. But it is very big, lots of splits, we don't know whether the splits are due to substantial differences in item difficulty parameters, because the item difficulty profiles in the end nodes are hard to interpret/compare. 
+
+\begin{Schunk}
+\begin{Sinput}
+ plot(Raschtree_culture)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{_MOB_paper-016}
+
+Mantel-Haenszel trees use the Mantel-Haenszel effect size measure for DIF. it has three categories (A: negligible, B: moderate, C: large). If none of the items has DIF in category B or C (default, but can also be changed so that DIF has to be C), the tree is stopped from growing. 
+
+The software must be installed from github, but will (probably) be implemented in the psychotree package some time in the future
 
 \begin{Schunk}
 \begin{Sinput}
  devtools::install_github("mirka-henninger/raschtreeMH")
- library("raschtreeMH")
+ library(raschtreeMH)
 \end{Sinput}
 \end{Schunk}
 
+Syntax is very similar to the classical Rasch tree, but an additional argument \texttt{stopfun}, where the mantelhaneszel stopping function can be selected (but also own stopping functions can be provided; see Henninger et al., 2023). The user also has to indicate what kind of purification strategy should be used (none, 2step, iterative). Iterative is recommended. 
 
-To fit a Rasch tree, we first create a \verb|data.frame| that contains the item responses and possible partitioning variables:
 
 \begin{Schunk}
 \begin{Sinput}
- math_items <- c("C7MTHBST", "C7MTHGD", "C7LIKMTH", "C7ENJMTH")
- part_vars <- c("GENDER", "RACE", "WKSESL")
- mydata <- SDQ_dat[ , part_vars]
- mydata$resp <- sapply(SDQ_dat[ , math_items], function(x) ifelse(x > 2, 1, 0)) 
+ Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
+                                   data = dat_SPISA, 
+                                   stopfun= stopfun_mantelhaenszel(
+                                     purification = "iterative"))
 \end{Sinput}
 \end{Schunk}
 
-Next, we apply function \verb|raschtree| and plot the result:
+For technical reasons, the information about the effect size and ETS classification are not saved in the tree object itself but have to be added afterwards using the \texttt{add\_mantelhaenszel} function. The information can then be accessed from the object using \texttt{\$info\$mantelhaenszel}
 
 \begin{Schunk}
 \begin{Sinput}
- stop_fun <- stopfun_mantelhaenszel(purification = "iterative", stopcrit = "C")
- math_tree <- raschtree(resp ~ ., data = mydata, stopfun = stop_fun)
+ Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture, 
+                                            purification = "iterative")
+ Raschtree_MH_culture$info$mantelhaenszel
 \end{Sinput}
 \end{Schunk}
+
+\todo[inline]{not clear what this information is necessary/useful for? since it is not displayed, leave this out?}
+
+If we now plot the Mantel-Haenszel Rasch tree, we see that the tree is much more concise with a lower number of splits. In addition, we see the number of items classified as A, B, or C in each node. For instance, we see that one item is classified as B in Node 1, and no item as C.
 
 \begin{Schunk}
 \begin{Sinput}
- plot(read_tree, gp = gpar(cex = .7))
+ plot(Raschtree_MH_culture)
 \end{Sinput}
 \end{Schunk}
+\includegraphics{_MOB_paper-021}
 
-The resulting tree is presented in Figure~\ref{fig:math_tree}. The splitting nodes show the $p$-value of the corresponding parameter stability tests. The terminal depict the node-specific item difficulties. The difficulties of items 1 (C7MTHBST: Math is one of my best subjects) and 3 (C7LIKMTH: I like math) appear relatively stable and show average difficulty in every subgroup. The difficulties of items 2 (C7MTHGD: I get good grades in math) and 4 (C7ENJMTH: I enjoy doing work in math) are always lower and higher, respectively, and also seem to vary more strongly. 
-
-
-
-\begin{figure}%
-\caption{Rasch tree for the four math items.}
-\begin{subfigure}{1.25\textwidth}
-\end{subfigure}
-\label{fig:math_tree}
-\end{figure}%
-
-We repeat the procedure for the reading items:
+We can also color the items in the end node profiles according to a split in the tree. Here, we see that for Node 1 (split on the covariate Area), item 2 shows DIF in category B. Item 2 seems to be easier (y-axis shows item easiness) in certain areas compared to Language, Culture, Medicine, Health, Arts. 
 
 \begin{Schunk}
 \begin{Sinput}
- read_items <-  c("C7ENGBST", "C7GRDENG", "C7LIKRD", "C7ENJRD")
- mydata$resp <- sapply(SDQ_dat[ , read_items], function(x) ifelse(x > 2, 1, 0))
- read_tree <- raschtree(resp ~ ., data = mydata, stopfun = stop_fun)
+ plot(Raschtree_MH_culture, color_by_node = 1)
 \end{Sinput}
 \end{Schunk}
+\includegraphics{_MOB_paper-022}
+
+We can also color by Node 3 (also split on covariate Area). Also here, Item 2 shows DIF. Similarly, item 2 seems to be more difficult (less easy) for respondents who study Arts. 
 
 \begin{Schunk}
 \begin{Sinput}
- plot(read_tree, gp = gpar(cex = .7))
+ plot(Raschtree_MH_culture, color_by_node = 3)
 \end{Sinput}
 \end{Schunk}
+\includegraphics{_MOB_paper-023}
 
-The resulting tree is presented in Figure~\ref{fig:read_tree}, which reveals a pattern of difficulties and splits quite similar to Figure~\ref{fig:math_tree}.
+This is interesting, because it is the culture scale. Why should people who study Arts have more problems to solve the item? When we look at the item, it probably makes sense: the items asks what four buildings have in common (Allianz-Arena München, Tate Modern NY, Olympia-Stadion Peking, Elbphilharmonie Hamburg). Two of these buildings are sports stadiums. So probably respondents who are interested in sports, and know these buildings well have an advantage on the item (independent of the level of knowledge about culture). 
 
-\begin{figure}%
-\caption{Rasch tree for the four reading items.}
-\begin{subfigure}{1.25\textwidth}
-\end{subfigure}
-\label{fig:read_tree}
-\end{figure}
-
-
-
+\todo[inline]{Maybe a small note on anchoring? Item difficulty profiles are anchoring on the items that do not show DIF. This facilitates comparisons across end nodes (but maybe we do not want to say that??)}
 
 \FloatBarrier
 \section{Discussion}
@@ -414,37 +455,37 @@ How true is each of these about you? (1="not at all true"; 2="a little bit true"
 
 \begin{itemize}
 
-  \item C7MTHBST (math): Math is one of my best subjects.
+\item C7MTHBST (math): Math is one of my best subjects.
 
-  \item C7ANGRY (internalizing): I feel angry when I have trouble learning.
+\item C7ANGRY (internalizing): I feel angry when I have trouble learning.
 
-  \item C7LIKRD (reading): I like reading.
+\item C7LIKRD (reading): I like reading.
 
-  \item C7WRYTST (internalizing): I worry about taking tests.
+\item C7WRYTST (internalizing): I worry about taking tests.
 
-  \item C7MTHGD (math): I get good grades in math.
+\item C7MTHGD (math): I get good grades in math.
 
-  \item C7LONLY (internalizing): I often feel lonely.
+\item C7LONLY (internalizing): I often feel lonely.
 
-  \item C7ENGBST (reading): English is one of my best subjects.
+\item C7ENGBST (reading): English is one of my best subjects.
 
-  \item C7SAD (internalizing): I feel sad a lot of the time.
+\item C7SAD (internalizing): I feel sad a lot of the time.
 
-  \item C7LIKMTH (math): I like math.
+\item C7LIKMTH (math): I like math.
 
-  \item C7WRYWEL (internalizing): I worry about doing well in school.
+\item C7WRYWEL (internalizing): I worry about doing well in school.
 
-  \item C7ENJRD (reading): I enjoy doing work in reading.
+\item C7ENJRD (reading): I enjoy doing work in reading.
 
-  \item C7WRYFIN (internalizing): I worry about finishing my work.
+\item C7WRYFIN (internalizing): I worry about finishing my work.
 
-  \item C7ENJMTH (math): I enjoy doing work in math.
+\item C7ENJMTH (math): I enjoy doing work in math.
 
-  \item C7WRYHNG (internalizing): I worry about having someone to hang out with at school.
+\item C7WRYHNG (internalizing): I worry about having someone to hang out with at school.
 
-  \item C7GRDENG (reading): I get good grades in English.
+\item C7GRDENG (reading): I get good grades in English.
 
-  \item C7ASHAME (internalizing): I feel ashamed when I make mistakes at school.
+\item C7ASHAME (internalizing): I feel ashamed when I make mistakes at school.
 
 \end{itemize}
 
