@@ -1,9 +1,9 @@
 
 \begin{itemize}
-\item Example Rasch tree: Data from SPISA (data from Trepte \& Verbeet)
-\item take the subsample of students (only students), and a random subsample of 5000 respondents (seed 04102023)
+\item Example Rasch tree: Data from SPISA (data from Trepte \& Verbeet; Bogen 20 (as in psychotree, but from the whole dataset, not only a subsample))
+\item take the subsample of students (only students); complete cases; $N = 9769$
 \item items could probably appear in Appendix??
-\begin{itemize}
+\begin{enumerate}
 \item Which painter created this painting? – Andy Warhol.
 \item What do these four buildings have in common? – All four were designed by the same architects.
 \item Roman numbers: What is the meaning of CLVI? – 156.
@@ -13,10 +13,8 @@
 \item Which city is the setting for the novel ‘Buddenbrooks’? – Lübeck.
 \item In which city is this building located? – Paris.
 \item Which one of the following operas is not by Mozart? – Aida.
+\end{enumerate}
 \end{itemize}
-\end{itemize}
-
-\todo[inline]{at Caro: Ich habe die Daten (glaube ich) mal von dir bekommen (\texttt{spisa\_ges.RData}) und die Item-Formulierungen habe ich aktuell aus dem psychotree Paket. Stimmt das so? Ich glaube, der Originaltest hatte mehrere parallele Skalen, zumindest sind in dem PDF/BUCH von Trepte sehr viel mehr, und sehr ähnliche Items enthalten. Das könnten wir vielleicht nochmal nachgucken.}
 
 We load the data and inspect the first rows. there are several covariates: age (continuous), gender (male, female, missing), area (Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, Sports) and 9 items from the culture scale (true/false 0/1). 
 
@@ -61,7 +59,7 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
 
 We can plot the Raschtree using the plot function. But it is very big, lots of splits, we don't know whether the splits are due to substantial differences in item difficulty parameters, because the item difficulty profiles in the end nodes are hard to interpret/compare. 
 
-<<fig = TRUE, height = 8, width = 15>>=
+<<fig = TRUE, width = 15, height = 8>>=
 plot(Raschtree_culture)
 @
 
@@ -74,15 +72,14 @@ devtools::install_github("mirka-henninger/raschtreeMH")
 library(raschtreeMH)
 @
 
-Syntax is very similar to the classical Rasch tree, but an additional argument \texttt{stopfun}, where the mantelhaneszel stopping function can be selected (but also own stopping functions can be provided; see Henninger et al., 2023). The user also has to indicate what kind of purification strategy should be used (none, 2step, iterative). Iterative is recommended. 
+Syntax is very similar to the classical Rasch tree, but an additional argument \texttt{stopfun}, where the mantelhaneszel stopping function can be selected (but also own stopping functions can be provided; see Henninger et al., 2023). The user also has to indicate what kind of purification strategy should be used (none, 2step, iterative). Iterative is recommended. Optionally, the user can specify the stopping criterion. In this case, tree growing is stopped when all items fall into category ``A''. 
 
 <<echo = FALSE>>=
-if(!file.exists("SPISA_example/Raschtree.rda")){
-  library(psychotree)
+if(!file.exists("SPISA_example/Raschtree_MH_culture.rda")){
   Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
                                     data = dat_SPISA, 
-                                    stopfun= stopfun_mantelhaenszel(purification = "iterative"))
-  Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture, purification = "iterative")
+                                    stopfun= stopfun_mantelhaenszel(purification = "iterative",
+                                                                    stopcrit = "A"))
   save(Raschtree_MH_culture, file = "SPISA_example/Raschtree_MH_culture.rda")
 }
 load("SPISA_example/Raschtree_MH_culture.rda")
@@ -92,37 +89,57 @@ load("SPISA_example/Raschtree_MH_culture.rda")
 Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
                                   data = dat_SPISA, 
                                   stopfun= stopfun_mantelhaenszel(
-                                    purification = "iterative"))
+                                    purification = "iterative",
+                                    stopcrit = "A"))
 @
 
-For technical reasons, the information about the effect size and ETS classification are not saved in the tree object itself but have to be added afterwards using the \texttt{add\_mantelhaenszel} function. The information can then be accessed from the object using \texttt{\$info\$mantelhaenszel}
+For technical reasons, the information about the effect size and ETS classification are not saved in the tree object itself but have to be added afterwards using the \texttt{add\_mantelhaenszel} function. 
 
-<<eval = FALSE>>=
+<<>>=
 Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture, 
                                            purification = "iterative")
-Raschtree_MH_culture$info$mantelhaenszel
 @
 
-\todo[inline]{not clear what this information is necessary/useful for? since it is not displayed, leave this out?}
+After we have added the information about the Mantel-Haenszel effect size to the Rasch tree, we can now visualize the Rasch tree together with the effect size measure. If we now plot the Mantel-Haenszel Rasch tree, we see that the tree is much more concise with a lower number of splits. In addition, we see the number of items classified as A, B, or C in each node. For instance, we see that one item is classified in category B in Node 1, and 4 items as C.
 
-If we now plot the Mantel-Haenszel Rasch tree, we see that the tree is much more concise with a lower number of splits. In addition, we see the number of items classified as A, B, or C in each node. For instance, we see that one item is classified as B in Node 1, and no item as C.
-
-<<fig = TRUE, width = 12, height = 7>>=
+<<fig = TRUE, width = 9, height = 7>>=
 plot(Raschtree_MH_culture)
 @
 
-We can also color the items in the end node profiles according to a split in the tree. Here, we see that for Node 1 (split on the covariate Area), item 2 shows DIF in category B. Item 2 seems to be easier (y-axis shows item easiness) in certain areas compared to Language, Culture, Medicine, Health, Arts. 
+We can also color the items in the end node profiles according to a split in the tree. Here, we see that for Node 1 (split on the covariate Gender), items 1, 6, 7, 8, 9 show DIF in categories B or C. 
 
-<<fig = TRUE, width = 12, height = 7>>=
+\begin{itemize}
+\item 1 painting by Andy Warhol
+\item 6: novel by Daniel Kehlmann: Die Vermessung der Welt
+\item 7: city of the Buddenbrooks: Lübeck
+\item 8: city with building: Paris
+\item 9: opera not by Mozart: Aida
+\end{itemize}
+
+<<fig = TRUE, width = 9, height = 7>>=
 plot(Raschtree_MH_culture, color_by_node = 1)
 @
 
-We can also color by Node 3 (also split on covariate Area). Also here, Item 2 shows DIF. Similarly, item 2 seems to be more difficult (less easy) for respondents who study Arts. 
+We can also color by Node 2 (split on covariate Age). Also here, Item 1 shows DIF in category B. It seems to be easier for younger respondents ($\leq 24$) compared to older respondents (painting by Andy Warhol).  
 
-<<fig = TRUE, width = 12, height = 7>>=
-plot(Raschtree_MH_culture, color_by_node = 3)
+<<fig = TRUE, width = 9, height = 7>>=
+plot(Raschtree_MH_culture, color_by_node = 2)
 @
 
-This is interesting, because it is the culture scale. Why should people who study Arts have more problems to solve the item? When we look at the item, it probably makes sense: the items asks what four buildings have in common (Allianz-Arena München, Tate Modern NY, Olympia-Stadion Peking, Elbphilharmonie Hamburg). Two of these buildings are sports stadiums. So probably respondents who are interested in sports, and know these buildings well have an advantage on the item (independent of the level of knowledge about culture). 
+For Node 4 (also split on covariate Age), Items 1 and 9 show DIF, such that Item 1 and 9 are easier for younger respondents (Age $\leq 29$). (Item 1: Painting by Andy Warhol; Item 9: Opera not by Mozart: Aida)
+
+<<fig = TRUE, width = 9, height = 7>>=
+plot(Raschtree_MH_culture, color_by_node = 4)
+@
+
 
 \todo[inline]{Maybe a small note on anchoring? Item difficulty profiles are anchoring on the items that do not show DIF. This facilitates comparisons across end nodes (but maybe we do not want to say that??)}
+
+
+The information about the Mantel-Haenszel effect size measure for each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. it contains the information on classification of each item in e ach node, the computed Mantel-Haenszel effect size measure, the type of purification, and if purification was iterative how many iterations were realized. 
+
+<<>>=
+Raschtree_MH_culture$info$mantelhaenszel
+@
+
+@Caro: for instance, from the signs we can see that items are less easy (i.e. more difficult) for females compared to men; it is probably easier to see that from the sign compared to the item difficulty profiles. 
