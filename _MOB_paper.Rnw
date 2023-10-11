@@ -378,6 +378,7 @@ For our two application examples, we could show that MOB can detect ..., perform
 sample size dependence, similar ideas like MH trees also possible for other MOB? \todo[inline]{possibly Mirka add something about visual interpretation? because effect sizes in mixed effects models are not very clear}
 
 The Rasch tree method has been extended to include an effect size measure that can stop the tree from growing if the effect size is non-substantial, but also supports researchers in interpreting the tree's results with respect to whether DIF effects are negligible, medium, or large. At the same time, effect sizes are less straightforward to calculate and interpret in linear mixed models, and therewith in the linear mixed effects model tree. A remedy to this issue can be interpretation techniques, such as partial dependence plots or individual conditional expectations plots. These interpretation techniques support researchers in gauging the size of the effect of predictor variables visually by depicting the predicted value of the machine learning method as a function of the value of the predictor variable(s). A comprehensive introduction, tutorial, and discussion into interpretation techniques for machine learning methods is given by \cite{Molnar2019} and \cite{Henninger2022c}. 
+\todo[inline]{This is my (Mirka) suggestion for the interpretation techniques. Please feel free to add, edit, delete, however you prefer!}
 
 The Mantel-Haenszel effect size measure for DIF will be integrated in the \texttt{psychotools} package. 
 

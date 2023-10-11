@@ -1,4 +1,6 @@
 
+\todo[inline]{Comment on new example: I now use data from Bogen 20 of the SPISA dataset. I use the student subset, and complete cases on all variables. The story is less clear, but the tree is still stopped early, and we can display which items have dif. }
+
 \begin{itemize}
 \item Example Rasch tree: Data from SPISA (data from Trepte \& Verbeet; Bogen 20 (as in psychotree, but from the whole dataset, not only a subsample))
 \item take the subsample of students (only students); complete cases; $N = 9769$
@@ -24,6 +26,7 @@ We load the data and inspect the first rows. there are several covariates: age (
 load("SPISA_example/dat_SPISA.rda")
 covar_data$Student <- NULL
 covar_data$Occupation <- NULL
+covar_data$Area <- sub("\n", "", covar_data$Area)
 @
 
 
@@ -62,6 +65,8 @@ We can plot the Raschtree using the plot function. But it is very big, lots of s
 <<fig = TRUE, width = 15, height = 8>>=
 plot(Raschtree_culture)
 @
+
+\todo[inline]{The are covariate split does not look pretty yet. But I will try to make it more pretty later on.. }
 
 Mantel-Haenszel trees use the Mantel-Haenszel effect size measure for DIF. it has three categories (A: negligible, B: moderate, C: large). If none of the items has DIF in category B or C (default, but can also be changed so that DIF has to be C), the tree is stopped from growing. 
 
