@@ -1,4 +1,3 @@
-% Encoding: UTF-8
 @book{Molnar2019,
 author = {Molnar, Christoph},
 title = {{Interpretable Machine Learning: A Guide for Making Black Box Models Explainable}},
@@ -14,7 +13,8 @@ journal = {Psychological Methods},
 title = {{Interpretable machine learning for psychological research: Opportunities and pitfalls}},
 year = {2023}
 }
-{StycyAntr21,
+
+@article{StycyAntr21,
   title={Are ratings in the eye of the beholder? A non-technical primer on many facet {R}asch measurement to evaluate rater effects on teacher behavior rating scales},
   author={Styck, Kara M and Anthony, Christopher J and Flavin, Angela and Riddle, David and LaBelle, Brittany},
   journal={Journal of School Psychology},
@@ -390,5 +390,3 @@ doi = {https://doi.org/10.1002/j.2330-8516.1985.tb00128.x},
 	doi              = {http://hdl.handle.net/10419/146128},
 	techreport       = {https://eeecon.uibk.ac.at/~zeileis/papers/Philipp+Zeileis+Strobl-2016.pdf},
 }
-
-@Comment{jabref-meta: databaseType:biblatex;}
