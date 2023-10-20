@@ -404,24 +404,13 @@ knitr::kable(res_df, format = "latex", digits = 3,
 \FloatBarrier
 \section{Discussion}
 
-\todo{next paragraph moved to here, where exactly?}
-An alternative framework for detecting groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with covariates. A comparison of both approaches is given by \citet{FriStrZei:2014}.
+In this tutorial paper we have outlined the rationale of the MOB algorithm and how it can be used for detecting parameter differences in mixed-effects and Rasch models. The main advantage of MOB is that it can detect groups of persons with different model parameters in a data-driven manner. This makes it more flexible for detecting differences that were not hypothesized by the researcher. For example in DIF analysis, it is often the case that obvious sources of DIF have already been avoided by the content experts during item creation. Any remaining DIF is unexpected. Therefore, any DIF detection approach that relies on the researchers correctly specifying the exact groups of persons that exhibit DIF can miss DIF if it is associated with other (combinations of) covariates or other cutpoints than the ones investigated. In this sense, the more exploratory approach of Rasch trees has higher statistical power to detect DIF in previously unknown groups \citep{StrKopZei:2015:P}. The same argument holds for parameter differences in mixed-effects models, where the substantial hypotheses formulated a priori are typically about global intervention effects, not about possible subgroup-specific differences. 
 
-In this tutorial paper we have outlined the rationale of the MOB algorithm and how it can be used for detecting parameter differences in mixed-effects and Rasch models. The main advantage of MOB is that it can detect groups of persons with different model parameters in a data-driven manner. This makes it more flexible for detecting differences that were not hypothesized by the researcher. For example in DIF analysis, it is often the case that obvious sources of DIF have already been avoided by the content experts during item creation. Any remaining DIF is unexpected. Therefore, any DIF detection approach that relies on the researchers correctly specifying the exact groups of persons that exhibit DIF can miss DIF if it is associated with other (combinations of) covariates or other cutpoints than the ones investigated. In this sense, the more exploratory approach of Rasch trees has higher statistical power to detect DIF in previously unknown groups \citep{StrKopZei:2015:P}. 
+An alternative framework for detecting previously unknown groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with observed covariates. A comparison of MOB and mixture modelling is given by \citet{FriStrZei:2014}.
 
-The same holds for parameter differences in mixed-effects models, where the substantial hypotheses are typically about the fixed effects of the interventions, not necessarily about all possible subgroup-specific .... \todo{Marjolein add if this makes any sense here}
+\subsection{Limitations of MOB}\todo{I (Caro) would not make subsections within discussion}
 
-
-For our two application examples, we could show that MOB can detect ..., performs automated variable selection ...
-
-
-
-\subsection{Limitations}
-
-Due to the exploratory nature of MOB, it does not allow for hypothesis tests, as there is no valid way to account for the exploratory searching of the subgroups. Thus, even if detected subgroups are substantively meaningful or differences are large, if researchers want to ascertain statistical significance of the subgroup differences, this should be done on new data using confirmatory techniques.
-
-\todo[inline]{Mention shortcomings.}
-
+Due to the exploratory nature of MOB, it does not allow for hypothesis tests\todo[inline]{I (Caro) think this will sound confusing because earlier in the paper we explain that MOB is indeed based on significance tests, and due to the fact that the stopping is based on the significance test and (at least in party and psychotree) we use Bonferroni for adjusting against the number of covariates, it is not like we are doing completely uncontrolled multiple testing - in the Raschtree paper we write about this: Moreover, it is important to note that our model-based recursive partitioning algorithm is not affected by an inflation of chance due to its recursive nature. Indeed, several statistical tests are successively conducted in a Rasch tree—but each test is conducted only if the previous test yielded a significant result. In this sense, the recursive approach forms a closed testing procedure, which does not lead to an inflation of chance as is well known from the literature on multiple comparisons (Marcus, Peritz, \& Gabriel, 1976; Hochberg \& Tamhane, 1987). For the Rasch tree, this means that the postulated significance level holds for the entire tree, not only for each individual split. This ensures that DIF is not erroneously detected as an artifact of the recursive nature of the algorithm. -- another, related, limitation that I would agree with and might be what you also had in mind is that the tree will not necessarily find the globally best partition, because every split is based on the previous split choices, here is what we wrote about this in the tree intro PsychMeth paper: Thus, variable selection in a single tree is affected by order effects similar to those present in stepwise variable selection approaches for parametric regression (that is also instable against random variation of the learning data, as pointed out by Austin and Tu 2004). In both recursive partitioning and stepwise regression, the approach of adding one locally optimal variable at a time does not necessarily (or rather hardly ever) lead to the globally best model over all possible combinations of variables. -- should we write something similar here?}, as there is no valid way to account for the exploratory searching of the subgroups. Thus, even if detected subgroups are substantively meaningful or differences are large, if researchers want to ascertain statistical significance of the subgroup differences, this should be done on new data using confirmatory techniques. \todo{Marjolein write a little more here? e.g. such as cross validation?}
 
 \todo[inline]{Write about future work.}
 
@@ -430,7 +419,6 @@ sample size dependence, similar ideas like MH trees also possible for other MOB?
 The Rasch tree method has been extended to include an effect size measure that can stop the tree from growing if the effect size is non-substantial, but also supports researchers in interpreting the tree's results with respect to whether DIF effects are negligible, medium, or large. At the same time, effect sizes are less straightforward to calculate and interpret in linear mixed models, and therewith in the linear mixed effects model tree. A remedy to this issue can be interpretation techniques, such as partial dependence plots or individual conditional expectations plots. These interpretation techniques support researchers in gauging the size of the effect of predictor variables visually by depicting the predicted value of the machine learning method as a function of the value of the predictor variable(s). A comprehensive introduction, tutorial, and discussion into interpretation techniques for machine learning methods is given by \cite{Molnar2019} and \cite{Henninger2022c}. 
 \todo[inline]{This is my (Mirka) suggestion for the interpretation techniques. Please feel free to add, edit, delete, however you prefer!}
 
-The Mantel-Haenszel effect size measure for DIF will be integrated in the \texttt{psychotools} package. 
 
 \todo{Mention that the exclusion of random effects from partitioning can both be advantage and disadvantage. In future work, use of parameter stability tests for random-effects parameters of Ting and Ed will be explored.}
 
@@ -445,11 +433,11 @@ The Mantel-Haenszel effect size measure for DIF will be integrated in the \textt
 
 
 
-\section{Appendix A: Association between Age and PPVT scores before and after transformation}
+\section{Association between Age and PPVT scores before and after transformation}
 \label{sec:AppendixA}
 
 
-\begin{figure}
+\begin{figure}[h!]
 \caption{Association between Age and PPVT scores before (left) and after (right) transformation.}
 <<echo=FALSE, fig=TRUE, width=6, height=4>>=
 par(mfrow = c(1, 2))
@@ -459,6 +447,22 @@ plot(sqrt(HS_dat$Age), HS_dat$PPVT, ylab = "PPVT", xlab = "Age (square root)",
      cex = .7, cex.lab = .7, cex.axis = .7)
 @
 \end{figure}
+
+
+\section{Items of the culture scale for application example 2}
+\label{sec:AppendixB}
+
+\begin{enumerate}
+\item Which painter created this painting? – Andy Warhol.
+\item What do these four buildings have in common? – All four were designed by the same architects.
+\item Roman numbers: What is the meaning of CLVI? – 156.
+\item What was the German movie with the most viewers since 1990? – Der Schuh des Manitu.
+\item In which TV series was the US president portrayed by an African American actor for a long time? – 24.
+\item What is the name of the bestselling novel by Daniel Kehlmann? – Die Vermessung der Welt (Measuring The World).
+\item Which city is the setting for the novel ‘Buddenbrooks’? – Lübeck.
+\item In which city is this building located? – Paris.
+\item Which one of the following operas is not by Mozart? – Aida.
+\end{enumerate}
 
 
 \end{document}
