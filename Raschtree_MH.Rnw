@@ -23,14 +23,14 @@ load("dat_SPISA.Rda")
 head(dat_SPISA, 3)
 @
 
-The results in \citet{SPISA:book} indicate that the Rasch model is appropriate for the individual scales of the general knowledge quiz, so that in the following we will fit Rasch trees by means of the function \texttt{raschtree} from the R package \texttt{psychotree}. However, model-based recursive partitioning is also available in \texttt{psychotree} for other IRT models. 
+The results in \citet{SPISA:book} indicate that the Rasch model is appropriate for the individual scales of the general knowledge quiz, so that in the following we will fit Rasch trees by means of the function \texttt{raschtree} from the R package \texttt{psychotree}. However, model-based recursive partitioning is also available in \texttt{psychotree} for other IRT models.
 
-The model which we would like to test for parameter stability in this example, the Rasch model, is based only on the matrix of item responses \texttt{culture}. It does not contain predictor variables of its own. Therefore, the formula syntax for the \texttt{raschtree} function looks simpler than that for the \texttt{lmertree} function in application example 1: On the left hand side of the $\sim$ symbol, we provide the item response matrix \texttt{culture} for the Rasch model. On the right hand side of the $\sim$ symbol, we provide the possible partitioning variables \texttt{Gender}, \texttt{Age}, and \texttt{Area}. 
+The model which we would like to test for parameter stability in this example, the Rasch model, is based only on the matrix of item responses \texttt{culture}. It does not contain predictor variables of its own. Therefore, the formula syntax for the \texttt{raschtree} function looks simpler than that for the \texttt{lmertree} function in application example 1: On the left hand side of the $\sim$ symbol, we provide the item response matrix \texttt{culture} for the Rasch model. On the right hand side of the $\sim$ symbol, we provide the possible partitioning variables \texttt{Gender}, \texttt{Age}, and \texttt{Area}.
 
 <<echo = FALSE>>=
 if(!file.exists("SPISA_example/Raschtree.rda")){
   library("psychotree")
-  Raschtree_culture <- raschtree(culture ~  Gender + Age + Area, 
+  Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                  data = dat_SPISA)
   save(Raschtree_culture, file = "SPISA_example/Raschtree.rda")
 }
@@ -44,7 +44,7 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                data = dat_SPISA)
 @
 
-Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size. 
+Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
 
 <<echo = FALSE>>=
 if(!file.exists("SPISA_example/Raschtree.rda")){
@@ -64,10 +64,10 @@ plot(Raschtree_culture)
 \includegraphics[width = \textwidth]{raschtree_culture.pdf}
 \end{figure}
 
-To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing. 
-At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future. 
+To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing.
+At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future.
 
-In order to install the functions from the author's github page and make them available in the current R session, use the following two commands. 
+In order to install the functions from the author's github page and make them available in the current R session, use the following two commands.
 
 <<>>=
 library(devtools)
@@ -75,16 +75,16 @@ install_github("mirka-henninger/raschtreeMH")
 library("raschtreeMH")
 @
 
-We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}. 
+We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}.
 
 For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the set of so called anchor items. Anchor items are used for aligning the scales of different groups of persons for testing further items for DIF. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. \todo{Mirka bitte diesen ganzen Absatz besonders gut korrekturlesen}
-The final set of anchor items for each group comparison, which results from the purification, is also used in the tree plots with color coding for DIF items displayed below. 
+The final set of anchor items for each group comparison, which results from the purification, is also used in the tree plots with color coding for DIF items displayed below.
 
 
 <<echo = FALSE>>=
 if(!file.exists("SPISA_example/Raschtree_MH_culture.rda")){
-  Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
-                                    data = dat_SPISA, 
+  Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area,
+                                    data = dat_SPISA,
                                     stopfun= stopfun_mantelhaenszel(purification = "iterative"))
   save(Raschtree_MH_culture, file = "SPISA_example/Raschtree_MH_culture.rda")
 }
@@ -92,16 +92,16 @@ load("SPISA_example/Raschtree_MH_culture.rda")
 @
 
 <<eval = FALSE>>=
-Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
-                                  data = dat_SPISA, 
+Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area,
+                                  data = dat_SPISA,
                                   stopfun= stopfun_mantelhaenszel(
                                     purification = "iterative"))
 @
 
-For technical reasons, the information about the Mantel-Haenszel effect size and classification is not saved in the tree object itself, but has to be added afterwards using the \texttt{add\_mantelhaenszel} function. 
+For technical reasons, the information about the Mantel-Haenszel effect size and classification is not saved in the tree object itself, but has to be added afterwards using the \texttt{add\_mantelhaenszel} function.
 
 <<>>=
-Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture, 
+Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture,
                                            purification = "iterative")
 @
 
@@ -111,7 +111,8 @@ After we have added this information to the Rasch tree, we can now visualize it 
 plot(Raschtree_MH_culture)
 @
 
-We can also color the DIF items in the end node profiles according to a particular split in the tree. Here, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
+We can also color the DIF items in the end node profiles according to a particular split in the tree. We will illustrate this with two examples. 
+First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
 
 \begin{itemize}
 \item 1: Painting by Andy Warhol
@@ -125,29 +126,25 @@ We can also color the DIF items in the end node profiles according to a particul
 plot(Raschtree_MH_culture, color_by_node = 1)
 @
 
-These items are (relative to the anchor items for this group comparison) easier\todo{double check Mirka} to answer for participants with female or missing gender. 
+These items are (relative to the anchor items for this group comparison) easier or less difficult to answer for participants with female or missing gender.
 
-\todo[inline]{Caro an Mirka: ich nehme an dass hier hohe item parameter bedeuten schwierig, niedrige leicht, dann wären diese items fur Frauen leichter, du hast es unten aber glaub genau andersrum geschrieben - evtl. weil im original Raschtree paper oder irgendwo mal easiness statt difficulty abgetragen war?}
+% We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the anchor items for this group comparison) more difficult to answer for younger respondents (age $\leq 24$) compared to older respondents.
 
-We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the anchor items for this group comparison) easier\todo{Caro glaubt: more difficult} to answer for younger respondents (age $\leq 24$) compared to older respondents.  
+% <<fig = TRUE, width = 9, height = 7>>=
+% plot(Raschtree_MH_culture, color_by_node = 2)
+% @
 
-<<fig = TRUE, width = 9, height = 7>>=
-plot(Raschtree_MH_culture, color_by_node = 2)
-@
-
-For node 4 (another split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are (relative to the anchor items for this group comparison) easier\todo{Caro glaubt: more difficult to answer} for younger respondents (age $\leq 29$).
+For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are (relative to the anchor items for this group comparison) more difficult to answer for younger respondents (age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
 
 <<fig = TRUE, width = 9, height = 7>>=
 plot(Raschtree_MH_culture, color_by_node = 4)
 @
 
-\todo[inline]{my (Caros) feeling is that two colored trees are enough, would leave out one of the colored trees based on age, and say above: We can also color the DIF items in the end node profiles according to a particular split in the tree. We will illustrate this with two examples. First, we can see that for node 1...}
-
-Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted. 
+Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted.
 
 <<>>=
 Raschtree_MH_culture$info$mantelhaenszel
 @
 
-The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when \todo{Caro an Mirka: ich rate hier völlig aus dem nichts, bitte korrigieren} when the item difficulty is lower in the right daughter node than in the left daughter node????. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier\todo{double check Mirka} to answer (relative to the anchor items for this group comparison) for participants with female or missing gender, which correspond to the right daughter node of node 1. Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
+The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right daughter node than in the left daughter node. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer (relative to the anchor items for this group comparison) for participants with female or missing gender, which correspond to the right daughter node of node 1. % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
 
