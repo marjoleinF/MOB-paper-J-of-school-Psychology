@@ -59,10 +59,10 @@ if(!file.exists("SPISA_example/Raschtree.rda")){
 plot(Raschtree_culture)
 @
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width = \textwidth]{raschtree_culture.pdf}
-\end{figure}
+% \begin{figure}[!h]
+% \centering
+% \includegraphics[width = \textwidth]{raschtree_culture.pdf}
+% \end{figure}
 
 To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing.
 At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future.
