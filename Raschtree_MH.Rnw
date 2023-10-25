@@ -77,9 +77,8 @@ library("raschtreeMH")
 
 We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}.
 
-For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the set of so called anchor items. Anchor items are used for aligning the scales of different groups of persons for testing further items for DIF. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. \todo{Mirka bitte diesen ganzen Absatz besonders gut korrekturlesen}
-The final set of anchor items for each group comparison, which results from the purification, is also used in the tree plots with color coding for DIF items displayed below.
-
+For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
+The final set of DIF-free items resulting from the purification is also used for aligning the item parameters for each group comparison in the tree plots with color coding, which are displayed below.
 
 <<echo = FALSE>>=
 if(!file.exists("SPISA_example/Raschtree_MH_culture.rda")){
@@ -126,15 +125,17 @@ First, we can see that for node 1 (split in the covariate \texttt{Gender}), item
 plot(Raschtree_MH_culture, color_by_node = 1)
 @
 
-These items are (relative to the anchor items for this group comparison) easier or less difficult to answer for participants with female or missing gender.
+These items are %(relative to the DIF-free items for this group comparison) 
+easier or less difficult to answer for participants with female or missing gender.
 
-% We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the anchor items for this group comparison) more difficult to answer for younger respondents (age $\leq 24$) compared to older respondents.
+% We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the DIF-free items for this group comparison) more difficult to answer for younger respondents (age $\leq 24$) compared to older respondents.
 
 % <<fig = TRUE, width = 9, height = 7>>=
 % plot(Raschtree_MH_culture, color_by_node = 2)
 % @
 
-For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are (relative to the anchor items for this group comparison) more difficult to answer for younger respondents (age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
+For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are %(relative to the DIF-free items for this group comparison) 
+more difficult to answer for younger respondents (age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
 
 <<fig = TRUE, width = 9, height = 7>>=
 plot(Raschtree_MH_culture, color_by_node = 4)
@@ -146,5 +147,6 @@ Detailed information about the Mantel-Haenszel criterion for each item in each n
 Raschtree_MH_culture$info$mantelhaenszel
 @
 
-The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right daughter node than in the left daughter node. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer (relative to the anchor items for this group comparison) for participants with female or missing gender, which correspond to the right daughter node of node 1. % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
+The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right daughter node than in the left daughter node. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer %(relative to the DIF-free items for this group comparison) 
+for participants with female or missing gender, which correspond to the right daughter node of node 1. % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
 

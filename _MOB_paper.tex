@@ -134,7 +134,7 @@ MOB can be used to detect DIF by means of testing whether the item parameters of
 
 If one joint Rasch model holds for the entire sample, i.e., if there is no DIF, a Rasch tree should show no splits. However, in certain settings in educational research, such as large scale assessments, very large sample sizes are available for testing for DIF. Large sample sizes are good for detecting even small effects or model violations with a high statistical power. The same holds for the statistical tests used for detecting parameter change in the MOB algorithm, so that in larger samples even very small parameter differences can be detected with large samples. However, in DIF detection this may mean that even very small DIF effects, that in practice can be considered ignorable, will be detected if only the sample is big enough. As we will illustrate in the first part of application example 2, for a large sample of university students who have taken a quiz to test their general knowledge, this can lead to very large trees, that are hard to interpret and contain splits that would not be considered relevant by measurement experts. Therefore, an extension of Rasch trees has been suggested by \citet{HenDebStr:2023:EPM} based on the Mantel-Haenszel effect size measure for DIF. \citet{HolTha:1985} have suggested an intuitive classification of DIF effect sizes based in the Mantel-Haenszel statistic, that is being widely used in educational testing. In this classification, category A stands for negligible DIF (small effect size or not statistically significant), B for medium DIF (neither A nor C), and C for large DIF (large effect size and statistically significant). \citet{HenDebStr:2023:EPM} have incorporated this classification as an additional stopping criterion for Rasch trees, so that the user can decide, for example, that a split should only be conducted if the detected DIF is of category B or C, while negligible DIF of category A should be ignored. 
 
-As we will show in application example 2, for large sample sizes this can be very helpful because it results in shorter trees that are easier to interpret and contain only splits corresponding to DIF effect sizes considered relevant in practice. Together with a purification step and anchoring \citep[see][and application example 2 for details]{HenDebStr:2023:EPM}, the Mantel-Haenszel classification can also be used for highlighting those items that show DIF with respect to certain groups of persons graphically. This can help generate hypothesis about the sources of DIF, as we will ilustrate in application example 2, and can also aid the decision how to proceed with the DIF items. 
+As we will show in application example 2, for large sample sizes this can be very helpful because it results in shorter trees that are easier to interpret and contain only splits corresponding to DIF effect sizes considered relevant in practice. Together with a purification step \citep[see][and application example 2 for details]{HenDebStr:2023:EPM}, the Mantel-Haenszel classification can also be used for highlighting those items that show DIF with respect to certain groups of persons graphically. This can help generate hypothesis about the sources of DIF, as we will ilustrate in application example 2, and can also aid the decision how to proceed with the DIF items. 
 %\todo[inline]{following text from Caro can be used here or later after example 2 or in discussion}
 For example, items that show DIF between different language groups can often be improved by means of making sure that in all translations the meaning is as similar as possible, that the words employed in the translations for the different languages are equally frequently used, etc. In other situations, sources of DIF might be harder to eliminate, so that often DIF items are excluded from a test. Either way, the measurement model needs to be refitted and its assumptions checked again after the final set of items has been decided upon and, in the case of modified items, administered again. 
 
@@ -298,7 +298,8 @@ sociodemographic data. In the following we will use only the responses to the ni
 Three possible partitioning variables are considered: \texttt{Gender} (in this data set coded only as male, female, or missing), \texttt{Age} (continuous), and \texttt{Area} (Area of study: Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, or Sports). The nine items from the culture scale are scored with 0 (incorrect answer) or 1 (corrct answer). 
 The quiz data have been prepared in a format where the nine items of the culture scale are not stored as individual columns of the data set, but the complete matrix of item responses is stored like a single variable \citep[see][]{raschtree:vignette} under the name \texttt{culture}. This means that we can access the item responses for all items jointly using the name \texttt{culture} in the following R commands. The first few rows of the data set look like this:
 
-\todo[inline]{I suggest that we publish the data set Mirka created with the paper, but don't show her data preprocessing steps (which are in the echo = FALSE chunk above); I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples}
+\todo[inline]{I suggest that we publish the data set Mirka created with the paper, but don't show her data preprocessing steps (which are in the echo = FALSE chunk above); I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples.
+Mirka: from what I understand, readRDS is for loading .rds/.rda files with only one r object in it, while load is for .rda files with one or more r object in it. I would opt for .rda, because I think it is more general? }
 
 \begin{Schunk}
 \begin{Sinput}
@@ -317,9 +318,9 @@ The quiz data have been prepared in a format where the nine items of the culture
 \end{Soutput}
 \end{Schunk}
 
-The results in \citet{SPISA:book} indicate that the Rasch model is appropriate for the individual scales of the general knowledge quiz, so that in the following we will fit Rasch trees by means of the function \texttt{raschtree} from the R package \texttt{psychotree}. However, model-based recursive partitioning is also available in \texttt{psychotree} for other IRT models. 
+The results in \citet{SPISA:book} indicate that the Rasch model is appropriate for the individual scales of the general knowledge quiz, so that in the following we will fit Rasch trees by means of the function \texttt{raschtree} from the R package \texttt{psychotree}. However, model-based recursive partitioning is also available in \texttt{psychotree} for other IRT models.
 
-The model which we would like to test for parameter stability in this example, the Rasch model, is based only on the matrix of item responses \texttt{culture}. It does not contain predictor variables of its own. Therefore, the formula syntax for the \texttt{raschtree} function looks simpler than that for the \texttt{lmertree} function in application example 1: On the left hand side of the $\sim$ symbol, we provide the item response matrix \texttt{culture} for the Rasch model. On the right hand side of the $\sim$ symbol, we provide the possible partitioning variables \texttt{Gender}, \texttt{Age}, and \texttt{Area}. 
+The model which we would like to test for parameter stability in this example, the Rasch model, is based only on the matrix of item responses \texttt{culture}. It does not contain predictor variables of its own. Therefore, the formula syntax for the \texttt{raschtree} function looks simpler than that for the \texttt{lmertree} function in application example 1: On the left hand side of the $\sim$ symbol, we provide the item response matrix \texttt{culture} for the Rasch model. On the right hand side of the $\sim$ symbol, we provide the possible partitioning variables \texttt{Gender}, \texttt{Age}, and \texttt{Area}.
 
 
 
@@ -331,7 +332,8 @@ The model which we would like to test for parameter stability in this example, t
 \end{Sinput}
 \end{Schunk}
 
-Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size. 
+Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
+
 
 
 \begin{Schunk}
@@ -339,46 +341,45 @@ Once the Rasch tree has been fitted, we can plot it using the standard \texttt{p
  plot(Raschtree_culture)
 \end{Sinput}
 \end{Schunk}
-\includegraphics{_MOB_paper-020}
 
-\todo[inline]{The are covariate split does not look pretty yet. But I [Mirka] will try to make it more pretty later on.. (reply Caro: yes if possible, and/or make it wider in the pdf?)}
+% \begin{figure}[!h]
+% \centering
+% \includegraphics[width = \textwidth]{raschtree_culture.pdf}
+% \end{figure}
 
-To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing. 
-At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future. 
+To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing.
+At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future.
 
-In order to install the functions from the author's github page and make them available in the current R session, use the following two commands. 
- 
-\todo[inline]{Caro an Mirka: don't we need library devtools?}
+In order to install the functions from the author's github page and make them available in the current R session, use the following two commands.
 
 \begin{Schunk}
 \begin{Sinput}
- devtools::install_github("mirka-henninger/raschtreeMH")
+ library(devtools)
+ install_github("mirka-henninger/raschtreeMH")
  library("raschtreeMH")
 \end{Sinput}
 \end{Schunk}
 
-We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. ???? and DIF category A as the stopping criterion. \todo{Caro an Mirka: oben steht das wäre eh der default, kann das stopcrit A raus? dann hier im Text und im code} It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}. 
+We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}.
 
-For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the set of so called anchor items. Anchor items are used for aligning the scales of different groups of persons for testing further items for DIF. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the refereces therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. \todo{Mirka bitte diesen ganzen Absatz besonders gut korrekturlesen}
-The final set of anchor items for each group comparison, which results from the purification, is also used in the tree plots with color coding for DIF items displayed below. 
-
+For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
+The final set of DIF-free items resulting from the purification is also used for aligning the item parameters for each group comparison in the tree plots with color coding, which are displayed below.
 
 
 \begin{Schunk}
 \begin{Sinput}
- Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area, 
-                                   data = dat_SPISA, 
+ Raschtree_MH_culture <- raschtree(culture ~  Gender + Age + Area,
+                                   data = dat_SPISA,
                                    stopfun= stopfun_mantelhaenszel(
-                                     purification = "iterative",
-                                     stopcrit = "A"))
+                                     purification = "iterative"))
 \end{Sinput}
 \end{Schunk}
 
-For technical reasons, the information about the Mantel-Haenszel effect size and classification is not saved in the tree object itself, but has to be added afterwards using the \texttt{add\_mantelhaenszel} function. 
+For technical reasons, the information about the Mantel-Haenszel effect size and classification is not saved in the tree object itself, but has to be added afterwards using the \texttt{add\_mantelhaenszel} function.
 
 \begin{Schunk}
 \begin{Sinput}
- Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture, 
+ Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture,
                                             purification = "iterative")
 \end{Sinput}
 \end{Schunk}
@@ -390,9 +391,10 @@ After we have added this information to the Rasch tree, we can now visualize it 
  plot(Raschtree_MH_culture)
 \end{Sinput}
 \end{Schunk}
-\includegraphics{_MOB_paper-025}
+\includegraphics{_MOB_paper-026}
 
-We can also color the DIF items in the end node profiles according to a particular split in the tree. Here, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
+We can also color the DIF items in the end node profiles according to a particular split in the tree. We will illustrate this with two examples. 
+First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
 
 \begin{itemize}
 \item 1: Painting by Andy Warhol
@@ -407,22 +409,19 @@ We can also color the DIF items in the end node profiles according to a particul
  plot(Raschtree_MH_culture, color_by_node = 1)
 \end{Sinput}
 \end{Schunk}
-\includegraphics{_MOB_paper-026}
-
-These items are (relative to the anchor items for this group comparison) easier\todo{double check Mirka} to answer for participants with female or missing gender. 
-
-\todo[inline]{Caro an Mirka: ich nehme an dass hier hohe item parameter bedeuten schwierig, niedrige leicht, dann wären diese items fur Frauen leichter, du hast es unten aber glaub genau andersrum geschrieben - evtl. weil im original Raschtree paper oder irgendwo mal easiness statt difficulty abgetragen war?}
-
-We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the anchor items for this group comparison) easier\todo{Caro glaubt: more difficult} to answer for younger respondents (age $\leq 24$) compared to older respondents.  
-
-\begin{Schunk}
-\begin{Sinput}
- plot(Raschtree_MH_culture, color_by_node = 2)
-\end{Sinput}
-\end{Schunk}
 \includegraphics{_MOB_paper-027}
 
-For node 4 (another split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are (relative to the anchor items for this group comparison) easier\todo{Caro glaubt: more difficult to answer} for younger respondents (age $\leq 29$).
+These items are %(relative to the DIF-free items for this group comparison) 
+easier or less difficult to answer for participants with female or missing gender.
+
+% We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the DIF-free items for this group comparison) more difficult to answer for younger respondents (age $\leq 24$) compared to older respondents.
+
+% <<fig = TRUE, width = 9, height = 7>>=
+% plot(Raschtree_MH_culture, color_by_node = 2)
+% @
+
+For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are %(relative to the DIF-free items for this group comparison) 
+more difficult to answer for younger respondents (age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -431,9 +430,7 @@ For node 4 (another split in the covariate \texttt{Age}), items 1 (Painting by A
 \end{Schunk}
 \includegraphics{_MOB_paper-028}
 
-\todo[inline]{my (Caros) feeling is that two colored trees are enough, would leave out one of the colored trees based on age, and say above: We can also color the DIF items in the end node profiles according to a particular split in the tree. We will illustrate this with two examples. First, we can see that for node 1...}
-
-Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted. 
+Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -474,7 +471,8 @@ node4 node2 node1
 \end{Soutput}
 \end{Schunk}
 
-The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when \todo{Caro an Mirka: ich rate hier völlig aus dem nichts, bitte korrigieren} when the item difficulty is lower in the right daughter node than in the left daughter node????. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier\todo{double check Mirka} to answer (relative to the anchor items for this group comparison) for participants with female or missing gender, which correspond to the right daughter node of node 1. Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
+The displayed information again shows that some items show only negligible DIF of category A in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right daughter node than in the left daughter node. For example, as we already saw from the first colored tree plot above, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer %(relative to the DIF-free items for this group comparison) 
+for participants with female or missing gender, which correspond to the right daughter node of node 1. % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
 
 
 \FloatBarrier
@@ -482,8 +480,15 @@ The displayed information again shows that some items show only negligible DIF o
 
 In this tutorial paper we have outlined the rationale of the MOB algorithm and how it can be used for detecting parameter differences in mixed-effects and Rasch models. The main advantage of MOB is that it can detect groups of persons with different model parameters in a data-driven manner. This makes it more flexible for detecting differences that were not hypothesized by the researcher. For example in DIF analysis, it is often the case that obvious sources of DIF have already been avoided by the content experts during item creation. Any remaining DIF is unexpected. Therefore, any DIF detection approach that relies on the researchers correctly specifying the exact groups of persons that exhibit DIF can miss DIF if it is associated with other (combinations of) covariates or other cutpoints than the ones investigated. In this sense, the more exploratory approach of Rasch trees has higher statistical power to detect DIF in previously unknown groups \citep{StrKopZei:2015:P}. The same argument holds for parameter differences in mixed-effects models, where the substantial hypotheses formulated a priori are typically about global intervention effects, not about possible subgroup-specific differences. 
 
-An alternative framework for detecting previously unknown groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with observed covariates. A comparison of MOB and mixture modelling is given by \citet{FriStrZei:2014}.
 
+However, researchers should be aware that a covariate-based approach like MOB will only be able to detect parameter differences if the relevant covariates were recorded in the study and supplied to the algorithm. If no or not many potentially relevant covariates are available, an alternative framework for detecting previously unknown groups of persons with different model parameters is mixture modelling \citep[see, e.g.,][in the context of Rasch modelling]{AyalySant17,FriStrZei:2015:EaPM}. Mixture modelling aims at identifying latent classes of persons with different properties. It can also be combined with observed covariates. A comparison of MOB and mixture modelling is given by \citet{FriStrZei:2014}.
+
+Another important caveat is that those covariates that are selected for splitting by the MOB algorithm are not necessarily causal for the observed parameter differences. They might also be proxies for other, unobserved covariates. For example, if DIF in the item parameters of a test on reading ability is found between different cities or districts, a variety of factors could be causally driving these effects, such as different compositions of native languages or sociodemographics. 
+
+Finally, as with any exploratory method, MOB should be considered as a tool for generating hypothesis and not as a confirmatory technique. While the MOB algorithm, as it is implemented in the R packages presented in this tutorial, has been constructed with care and uses statistical significance tests (and in the case of Mantel-Haenszel trees also effect sizes) to avoid spurious splits, for confirmatory testing of hypothesis it is recommended to use fresh data or resampling techniquest like cross validation.  
+
+
+\todo[inline]{I (Caro) have added a few more thoughts for the discussion above - Marjolein maybe this is already sufficient in length? please feel free to use anything from above or below and get back to me if you add/keep points where we might disagree}
 \subsection{Limitations of MOB}\todo{I (Caro) would not make subsections within discussion}
 
 Due to the exploratory nature of MOB, it does not allow for hypothesis tests\todo[inline]{I (Caro) think this will sound confusing because earlier in the paper we explain that MOB is indeed based on significance tests, and due to the fact that the stopping is based on the significance test and (at least in party and psychotree) we use Bonferroni for adjusting against the number of covariates, it is not like we are doing completely uncontrolled multiple testing - in the Raschtree paper we write about this: Moreover, it is important to note that our model-based recursive partitioning algorithm is not affected by an inflation of chance due to its recursive nature. Indeed, several statistical tests are successively conducted in a Rasch tree—but each test is conducted only if the previous test yielded a significant result. In this sense, the recursive approach forms a closed testing procedure, which does not lead to an inflation of chance as is well known from the literature on multiple comparisons (Marcus, Peritz, \& Gabriel, 1976; Hochberg \& Tamhane, 1987). For the Rasch tree, this means that the postulated significance level holds for the entire tree, not only for each individual split. This ensures that DIF is not erroneously detected as an artifact of the recursive nature of the algorithm. -- another, related, limitation that I would agree with and might be what you also had in mind is that the tree will not necessarily find the globally best partition, because every split is based on the previous split choices, here is what we wrote about this in the tree intro PsychMeth paper: Thus, variable selection in a single tree is affected by order effects similar to those present in stepwise variable selection approaches for parametric regression (that is also instable against random variation of the learning data, as pointed out by Austin and Tu 2004). In both recursive partitioning and stepwise regression, the approach of adding one locally optimal variable at a time does not necessarily (or rather hardly ever) lead to the globally best model over all possible combinations of variables. -- should we write something similar here?}, as there is no valid way to account for the exploratory searching of the subgroups. Thus, even if detected subgroups are substantively meaningful or differences are large, if researchers want to ascertain statistical significance of the subgroup differences, this should be done on new data using confirmatory techniques. \todo{Marjolein write a little more here? e.g. such as cross validation?}
