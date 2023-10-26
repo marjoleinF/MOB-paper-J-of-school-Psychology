@@ -1,21 +1,15 @@
 <<echo = FALSE>>=
-load("SPISA_example/dat_SPISA.rda")
-covar_data$Student <- NULL
-covar_data$Occupation <- NULL
-covar_data$Area <- sub("\n", "", covar_data$Area)
-dat_SPISA <- covar_data
-dat_SPISA$culture <- culture_scale
-save(dat_SPISA, file = "dat_SPISA.Rda")
+load("dat_SPISA.Rda")
 @
 
 We will illustrate the usage of Rasch trees and the Mantel-Haenszel effect size measure by means of a dataset from \citet{SPISA:book}. An online general knowledge quiz was conducted by the German
 weekly news magazine SPIEGEL. Below we will use the abbreviation \texttt{SPISA} for the name of the data set, because the quiz was termed ``students' PISA'' by the magazine, but it is not related to the ``real'' PISA study by the OECD. The data set contains the quiz results as well as
-sociodemographic data. In the following we will use only the responses to the nine items of the \textit{culture} scale (i.e., items 28 through 36) from test booklet 20 and only the $\Sexpr{nrow(covar_data)}$ complete cases of university students for illustration. The wording of the items is provided in Appendix~\ref{sec:AppendixB}. 
+sociodemographic data. In the following we will use only the responses to the nine items of the \textit{culture} scale (i.e., items 28 through 36) from test booklet 20 and only the $\Sexpr{nrow(dat_SPISA)}$ complete cases of university students for illustration. The wording of the items is provided in Appendix~\ref{sec:AppendixB}. 
 
 Three possible partitioning variables are considered: \texttt{Gender} (in this data set coded only as male, female, or missing), \texttt{Age} (continuous), and \texttt{Area} (Area of study: Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, or Sports). The nine items from the culture scale are scored with 0 (incorrect answer) or 1 (corrct answer). 
 The quiz data have been prepared in a format where the nine items of the culture scale are not stored as individual columns of the data set, but the complete matrix of item responses is stored like a single variable \citep[see][]{raschtree:vignette} under the name \texttt{culture}. This means that we can access the item responses for all items jointly using the name \texttt{culture} in the following R commands. The first few rows of the data set look like this:
 
-\todo[inline]{I suggest that we publish the data set Mirka created with the paper, but don't show her data preprocessing steps (which are in the echo = FALSE chunk above); I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples.
+\todo{I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples.
 Mirka: from what I understand, readRDS is for loading .rds/.rda files with only one r object in it, while load is for .rda files with one or more r object in it. I would opt for .rda, because I think it is more general? }
 
 <<>>=
@@ -28,8 +22,15 @@ The results in \citet{SPISA:book} indicate that the Rasch model is appropriate f
 The model which we would like to test for parameter stability in this example, the Rasch model, is based only on the matrix of item responses \texttt{culture}. It does not contain predictor variables of its own. Therefore, the formula syntax for the \texttt{raschtree} function looks simpler than that for the \texttt{lmertree} function in application example 1: On the left hand side of the $\sim$ symbol, we provide the item response matrix \texttt{culture} for the Rasch model. On the right hand side of the $\sim$ symbol, we provide the possible partitioning variables \texttt{Gender}, \texttt{Age}, and \texttt{Area}.
 
 <<echo = FALSE>>=
+library("psychotree")
 if(!file.exists("SPISA_example/Raschtree.rda")){
-  library("psychotree")
+  # relabel factors of the area covariate so that the Raschtree is not too big: 
+  levels(dat_SPISA$Area) <- c("Lang & Cult", "\nLaw and Econ",
+                              "\nMed & Health", "\nEngin",
+                              "\nSci, Phar, Geo",
+                              "\nAgri & Nutri",
+                              "\nSports", "Arts",
+                              "\nno Info")
   Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                  data = dat_SPISA)
   save(Raschtree_culture, file = "SPISA_example/Raschtree.rda")
@@ -46,23 +47,10 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
 
 Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
 
-<<echo = FALSE>>=
-if(!file.exists("SPISA_example/Raschtree.rda")){
-  pdf("raschtree_culture.pdf", width = 36, height = 15)
-  plot(Raschtree_culture)
-  dev.off()
-}
-@
 
-
-<<fig = TRUE, width = 15, height = 8, eval = FALSE>>=
+<<fig = TRUE, width = 22, height = 10>>=
 plot(Raschtree_culture)
 @
-
-% \begin{figure}[!h]
-% \centering
-% \includegraphics[width = \textwidth]{raschtree_culture.pdf}
-% \end{figure}
 
 To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing.
 At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future.
