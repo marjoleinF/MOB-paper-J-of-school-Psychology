@@ -3,18 +3,18 @@ load("dat_SPISA.Rda")
 @
 
 We will illustrate the usage of Rasch trees and the Mantel-Haenszel effect size measure by means of a dataset from \citet{SPISA:book}. An online general knowledge quiz was conducted by the German
-weekly news magazine SPIEGEL. Below we will use the abbreviation \texttt{SPISA} for the name of the data set, because the quiz was termed ``students' PISA'' by the magazine, but it is not related to the ``real'' PISA study by the OECD. The data set contains the quiz results as well as
-sociodemographic data. In the following we will use only the responses to the nine items of the \textit{culture} scale (i.e., items 28 through 36) from test booklet 20 and only the $\Sexpr{nrow(dat_SPISA)}$ complete cases of university students for illustration. The wording of the items is provided in Appendix~\ref{sec:AppendixB}. 
+weekly news magazine SPIEGEL. Below we will use the abbreviation \texttt{SPISA} for the name of the data set, because the quiz was termed ``students' PISA'' by the magazine, but it is not related to the ``real'' PISA study by the OECD. The data set contains the quiz results as well as sociodemographic data. In the following we will use only the responses to the nine items of the \textit{culture} scale (i.e., items 28 through 36) from test booklet 20 and only the $\Sexpr{nrow(dat_SPISA)}$ complete cases of university students for illustration. The wording of the items is provided in Appendix~\ref{sec:AppendixB}. 
 
-Three possible partitioning variables are considered: \texttt{Gender} (in this data set coded only as male, female, or missing), \texttt{Age} (continuous), and \texttt{Area} (Area of study: Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, or Sports). The nine items from the culture scale are scored with 0 (incorrect answer) or 1 (corrct answer). 
+Three possible partitioning variables are considered: \texttt{Gender} (in this data set coded only as male, female, or missing), \texttt{Age} (continuous), and \texttt{Area} (Area of study: Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, or Sports). The nine items from the culture scale are scored with 0 (incorrect answer) or 1 (correct answer). 
 The quiz data have been prepared in a format where the nine items of the culture scale are not stored as individual columns of the data set, but the complete matrix of item responses is stored like a single variable \citep[see][]{raschtree:vignette} under the name \texttt{culture}. This means that we can access the item responses for all items jointly using the name \texttt{culture} in the following R commands. The first few rows of the data set look like this:
 
 \todo{I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples.
-Mirka: from what I understand, readRDS is for loading .rds/.rda files with only one r object in it, while load is for .rda files with one or more r object in it. I would opt for .rda, because I think it is more general? }
+Mirka: from what I understand, readRDS is for loading .rds/.rda files with only one r object in it, while load is for .rda files with one or more r object in it. I would opt for .rda, because I think it is more general? Marjolein: I think if we include datasets in supplemental materials, we should have files which are only 1 dataset, not sets of datasets or objects. I think this will make the examples more simple. In practice, users will probably also have only 1 dataset.}
 
 <<>>=
 load("dat_SPISA.Rda")
-head(dat_SPISA, 3)
+#head(dat_SPISA, 3) ## commented out because will not compile, dat_SPISA is not
+                    ## an object in current wd
 @
 
 The results in \citet{SPISA:book} indicate that the Rasch model is appropriate for the individual scales of the general knowledge quiz, so that in the following we will fit Rasch trees by means of the function \texttt{raschtree} from the R package \texttt{psychotree}. However, model-based recursive partitioning is also available in \texttt{psychotree} for other IRT models.
@@ -45,7 +45,7 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                data = dat_SPISA)
 @
 
-Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
+Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} method. The item parameters for the nine culture items are displayed in the end nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
 
 
 <<fig = TRUE, width = 22, height = 10>>=
@@ -53,9 +53,9 @@ plot(Raschtree_culture)
 @
 
 To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing.
-At the moment, the R functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from github. They will also be made available as part of the \texttt{psychotree} package in the future.
+At the moment, the \texttt{R} functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from GitHub. They will be made available as part of the \texttt{psychotree} package in the future.
 
-In order to install the functions from the author's github page and make them available in the current R session, use the following two commands.
+In order to install the functions from the author's GitHub page and make them available in the current \texttt{R} session, use the following two commands:
 
 <<>>=
 library(devtools)
@@ -65,7 +65,7 @@ library("raschtreeMH")
 
 We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also provide the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user defined stopping functions \citep[see][for details]{HennyDeba23}.
 
-For the purification strategy, there are three options (\texttt{none}, \texttt{2step}, and \texttt{iterative}). Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
+For the purification strategy, there are three options: \texttt{none}, \texttt{2step} and \texttt{iterative}. Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
 The final set of DIF-free items resulting from the purification is also used for aligning the item parameters for each group comparison in the tree plots with color coding, which are displayed below.
 
 <<echo = FALSE>>=
