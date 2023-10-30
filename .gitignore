@@ -44,3 +44,6 @@ _MOB_paper.tex
 ## rda files because they can be reproduced from code
 *.Rda
 
+
+## Exceptions for data: 
+!dat_SPISA.Rda
