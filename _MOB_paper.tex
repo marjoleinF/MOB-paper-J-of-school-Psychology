@@ -22,23 +22,47 @@
 %text from Marjolein edited by Caro
 \newcommand{\edc}[1]{\textcolor{blue}{#1}}
 
-\linespread{1.3}
+\linespread{1.5}
 
 
 \title{One Model May Not Fit All: Subgroup Detection Using Model-Based Recursive Partitioning}
-\shorttitle{shorttitle}
+\shorttitle{Subgroup Detection Using Model-Based Recursive Partitioning}
 
-\authorsnames{Marjolein Fokkema$^1$, Mirka Henninger$^2$ \& Carolin Strobl$^2$}
-\authorsaffiliations{$^1$Leiden University, $^2$Universit\"at Z\"urich}
+\authorsnames{ }
+\authorsaffiliations{ }
 
-\abstract{Model-based recursive partitioning \citep[MOB,][]{ZeilyHoth08} is a flexible framework for detecting subgroups of persons showing different effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity of intervention effects. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item response theory (IRT) models. In the first case study, we show how GLMM trees \citep{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to longitudinal data from a study on the effects of Head Start, to identify subgroups of families where children show comparatively larger or smaller gains in performance. In a second case study, we show how Rasch trees \citep{StroyKopf15} can be used to detect subgroups with different item parameters in IRT models, i.e.~differential item functioning (DIF). %DIF should be investigated before using test results for comparing groups, because undetected DIF can affect test fairness. % Test fairness is more related to use of test scores in practice than group-level comparisons I would think?
-We show how a recently developed stopping criterion \citep{HenDebStr:2023:EPM} can be used to guide subgroup detection based on DIF effect sizes.\\}
+\abstract{Model-based recursive partitioning \citep[MOB,][]{ZeilyHoth08} is a flexible framework for detecting subgroups of persons showing different effects in a wide range of parametric models. It provides a versatile tool for detecting and explaining heterogeneity in, for example, intervention studies. In this tutorial paper, we provide an introduction to the general MOB framework. In two specific case studies, we show how MOB-based methods can be used to detect and explain heterogeneity in two widely-used frameworks in educational studies: mixed-effects and item response theory (IRT) models. In the first case study, we show how GLMM trees \citep{FokkySmit18} can be used to detect subgroups with different parameters in mixed-effects models. We apply GLMM trees to longitudinal data from a study on the effects of Head Start, to identify subgroups of families where children show comparatively larger or smaller gains in performance. In a second case study, we show how Rasch trees \citep{StroyKopf15} can be used to detect subgroups with different item parameters in IRT models, i.e.~differential item functioning (DIF). DIF should be investigated before using test results for group comparisons. We show how a recently developed stopping criterion \citep{HenDebStr:2023:EPM} can be used to guide subgroup detection based on DIF effect sizes.\\}
 
 
 \usepackage{Sweave}
 \begin{document}
 \input{_MOB_paper-concordance}
 \renewenvironment{Schunk}{\small}{}
+
+
+
+\begin{titlepage}
+   \begin{center}
+       \vspace*{1cm}
+
+       \textbf{\large One Model May Not Fit All}\\
+
+       \vspace{0.5cm}
+        \large Subgroup Detection Using\\Model-Based Recursive Partitioning\\
+            
+       \vspace{1.5cm}
+
+       \textbf{Marjolein Fokkema$^1$, Mirka Henninger$^2$ and Carolin Strobl$^2$}\\
+       $^1$Leiden University, $^2$Universit\"at Z\"urich
+
+       \vfill
+
+            
+       \vspace{0.8cm}
+     
+
+   \end{center}
+\end{titlepage}
 
 
 \maketitle
@@ -167,7 +191,7 @@ We load the data and inspect the first rows:
 
 \begin{Schunk}
 \begin{Sinput}
- HS_dat <- readRDS("HS_dat.Rda")
+ load("HS_dat.Rda")
  head(HS_dat, 3)
 \end{Sinput}
 \begin{Soutput}
@@ -233,21 +257,6 @@ Next, we plot the tree. With multiple fixed-effects predictors of interest, the 
 \end{Sinput}
 \end{Schunk}
 
-\begin{figure}%
-\caption{GLMM tree with trajectories of PPVT scores}
-\includegraphics{_MOB_paper-012}
-
-\vspace*{-3cm}
-
-\includegraphics{_MOB_paper-013}
-\\\textit{Note}: Red lines depict average node-specific trajectories for siblings participating in Head Start; black lines depict average node-specific trajectories for siblings not participating in Head Start.
-\label{fig:lmm_tree}
-\end{figure}%
-
-
-The resulting tree is presented in Figure~\ref{fig:lmm_tree}. Below each terminal node, we plotted the observations and the two regression curves given by the coefficients in that node. The first split was made based on the AFTQ variable, which represents the mother's score on the Armed Forced Qualification Test, adjusted for the age at which they completed the test. The group with higher mother's AFTQ scores is further split based on race. The Black and Hispanic group is further split based on mother's AFTQ score. 
-
-\FloatBarrier
 
 \begin{table}
 
@@ -267,8 +276,23 @@ Node & Program & PPVT at age 6 & PPVT at age 12\\
 \bottomrule
 \end{tabular}
 \end{table}
-To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 and 12. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit increases over time for the group with higher mother's AFTQ scores. The benefit decreases over time for children in the group with lowest mother's AFTQ scores (node 2). For Black and Hispanic children with intermediate mother's AFTQ scores, the benefit at age 6 even shifts to a disadvantage of Head Start participation at age 12. These results roughly correspond to the findings of \cite{Demi09}, who report a relative benefit of Head Start participation of about 0.15 standard deviations at age 5-6, which fades out over time to about 0.05 at ages 11-14. Fade out is reported to be particularly strong for Afriacn-American and very disadvantaged children.
+\FloatBarrier
 
+\begin{figure}%
+\caption{GLMM tree with trajectories of PPVT scores}
+\includegraphics{_MOB_paper-013}
+
+\vspace*{-3cm}
+
+\includegraphics{_MOB_paper-014}
+\\\textit{Note}: Red lines depict average node-specific trajectories for siblings participating in Head Start; black lines depict average node-specific trajectories for siblings not participating in Head Start.
+\label{fig:lmm_tree}
+\end{figure}%
+
+The resulting tree is presented in Figure~\ref{fig:lmm_tree}. Below each terminal node, we plotted the observations and the two regression curves given by the coefficients in that node. The first split was made based on the AFTQ variable, which represents the mother's score on the Armed Forced Qualification Test, adjusted for the age at which they completed the test. The group with higher mother's AFTQ scores is further split based on race. The Black and Hispanic group is further split based on mother's AFTQ score. 
+
+
+To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\ref{tab:predictions} provides predicted PPVT scores for each of the groups and programs at ages 6 and 12. All nodes show a modest benefit of Head Start participation at age 6, about 3-4 points on the PPVT. This benefit increases over time for the group with higher mother's AFTQ scores. The benefit decreases over time for children in the group with lowest mother's AFTQ scores (node 2). For Black and Hispanic children with intermediate mother's AFTQ scores, the benefit at age 6 even shifts to a disadvantage of Head Start participation at age 12. These results roughly correspond to the findings of \cite{Demi09}, who report a relative benefit of Head Start participation of about 0.15 standard deviations at age 5-6, which fades out over time to about 0.05 at ages 11-14. Fade out was reported to be particularly strong for Afriacn-American and very disadvantaged children. The global benefit of participation in Head Start as shown in Figure~\ref{fig:global_lmm} and reported by \cite{Demi09} thus seems to differ across groups.
 
 %To evaluate whether the detected subgroups indeed contribute to better predictions, we used cross validation. We \edc{randomly} separated the 258 families in the dataset into ten equally-sized folds. We took nine of the ten folds as a training dataset on which we fitted two models: an LMM tree \edc{like the one shown above} (i.e., an LMM with subgroups \todo{necessary? confused me}) and an LMM without subgroups (comprising main and interaction effects of age and Head Start participation, and a random intercept with respect to child). We evaluated performance on the remaining folds by computing and evaluating accuracy of the predictions. \todo{explain MSE and $R^2$} We repeated this procedure ten times, so that all folds were used as a test set once. The results are presented in Table~\ref{tab:performance}, which shows that LMM trees generalize well: They provide better predictive accuracy compared to LMMs, while implementing only few splits. 
 
@@ -278,7 +302,7 @@ To aid interpretation of the coefficients in Figure~\ref{fig:lmm_tree}, Table~\r
 
 
 \newpage
-\FloatBarrier
+
 \section{Application Example 2: Subgroup Detection in Rasch Models}
 \label{sec:TutorialRasch}
 
@@ -288,9 +312,6 @@ weekly news magazine SPIEGEL. Below we will use the abbreviation \texttt{SPISA} 
 
 Three possible partitioning variables are considered: \texttt{Gender} (in this data set coded only as male, female, or missing), \texttt{Age} (continuous), and \texttt{Area} (Area of study: Language \& Culture, Law \& Economics, Medicine \& Health, Engineering, Sciences, Pharmacy, Geography, Agriculture \& Nutrition, or Sports). The nine items from the culture scale are scored with 0 (incorrect answer) or 1 (correct answer). 
 The quiz data have been prepared in a format where the nine items of the culture scale are not stored as individual columns of the data set, but the complete matrix of item responses is stored as a single variable \citep[see][]{raschtree:vignette} under the name \texttt{culture}. This means that we can access the item responses for all items jointly using the name \texttt{culture} in the following \texttt{R} commands. The first few rows of the data set look like this:
-
-\todo{I usually use load for Rda files, Marjolein uses readRDS, is there an advantage? use the same in both examples.
-Mirka: from what I understand, readRDS is for loading .rds/.rda files with only one r object in it, while load is for .rda files with one or more r object in it. I would opt for .rda, because I think it is more general? Marjolein: I think if we include datasets in supplemental materials, we should have files which are only 1 dataset, not sets of datasets or objects. I think this will make the examples more simple. In practice, users will probably also have only 1 dataset.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -323,7 +344,7 @@ The model which we would like to test for parameter stability in this example, t
 \end{Sinput}
 \end{Schunk}
 
-Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function. The resulting tree is depicted in Figure \ref{fig:MHtree1}. The item parameters for the nine culture items are displayed in the terminal nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
+Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function: 
 
 \begin{Schunk}
 \begin{Sinput}
@@ -339,6 +360,7 @@ Once the Rasch tree has been fitted, we can plot it using the standard \texttt{p
 \label{fig:MHtree1}
 \end{figure}%
 
+The resulting tree is depicted in Figure \ref{fig:MHtree1}. The item parameters for the nine culture items are displayed in the terminal nodes of the tree. However, it is hard to interpret the tree structure because such a large number of splits was created. Moreover, it is hard to tell whether all splits are due to substantial amounts of DIF, or whether some of the splits are due to small DIF effects that only became statistically significant due to the large sample size.
 
 To assess whether DIF effects are substantial or negligible, it is possible to use the Mantel-Haenszel DIF effect size measure as an additional stopping criterion. It has three categories (A: negligible, B: moderate, C: large). If none of the items shows DIF in category B or C\footnote{This is the default setting. It can also be changed so that splitting is stopped if no item shows DIF in category C.}, the tree is stopped from growing further.
 At the moment, the \texttt{R} functions for the Mantel-Haenszel stopping criterion and additional visualizations based on the Mantel-Haenszel effect size are available from GitHub. They will be made available as part of the \texttt{psychotree} package in the future.
@@ -356,7 +378,9 @@ In order to install the functions from the author's GitHub page and make them av
 We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also specify the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user-defined stopping functions \citep[see][for details]{HennyDeba23}.
 
 For the purification strategy, there are three options: \texttt{none}, \texttt{2step} and \texttt{iterative}. Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
-The final set of DIF-free items resulting from the purification is also used for aligning the item parameters for each group comparison in the tree plots with color coding, which are displayed below.
+The final set of DIF-free items resulting from the purification will also be used for aligning the item parameters for each group comparison in the tree plots with color coding, which will be discussed and displayed below.
+
+We fit the Raschtree using the Mantel-Haenszel stopping criterion as follows:
 
 
 \begin{Schunk}
@@ -393,7 +417,7 @@ After we have added this information to the Rasch tree, we can now visualize it 
 \end{Sinput}
 \end{Schunk}
 
-The result is presented in Figure~\label{fig:MHtree2}, which reveals that the Rasch tree is much more concise with a lower number of splits. In addition, in each node the number of items classified as A, B, or C is displayed. For instance, we can see that in node 1 one item is classified in category B (moderate DIF), and 4 items are classified in category C (large DIF).
+The result is presented in Figure~\ref{fig:MHtree2}, which reveals that the Rasch tree is much more concise with a lower number of splits. In addition, in each node the number of items classified as A, B, or C is displayed. For instance, we can see that in node 1 one item is classified in category B (moderate DIF), and 4 items are classified in category C (large DIF).
 
 We can also color the DIF items in the end node profiles according to a particular split in the tree. We will illustrate this with two examples: First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
 
@@ -419,7 +443,8 @@ We can also color the DIF items in the end node profiles according to a particul
 \end{figure}%
 
 These items are %(relative to the DIF-free items for this group comparison) 
-easier or less difficult to answer for participants with female or missing gender.
+easier or less difficult to answer for participants with female or missing gender. Alternatively, we can also color the DIF items in the end node profiles according to a later split in the tree:
+
 
 % We can also color the DIF items according to node 2 (split in the covariate \texttt{Age}). Again, item 1 (Painting by Andy Warhol) shows DIF in category B. It is (relative to the DIF-free items for this group comparison) more difficult to answer for younger respondents (age $\leq 24$) compared to older respondents.
 
@@ -427,7 +452,6 @@ easier or less difficult to answer for participants with female or missing gende
 % plot(Raschtree_MH_culture, color_by_node = 2)
 % @
 
-Alternatively, we can also color the DIF items in the end node profiles according to a later split in the tree:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -499,13 +523,17 @@ However, researchers should be aware that a covariate-based approach like MOB wi
 
 Another important caveat is that those covariates that are selected for splitting by the MOB algorithm are not necessarily causal for the observed parameter differences. They might also be proxies for other, unobserved covariates. For example, if DIF in the item parameters of a test on reading ability is found between different cities or districts, a variety of factors could be causally driving these effects, such as different compositions of native languages or sociodemographics. 
 
-As with any exploratory method, MOB should be considered as a tool for generating hypotheses and not as a confirmatory technique. While the MOB algorithm, as it is implemented in the \texttt{R} packages presented in this tutorial, has been constructed with care and uses statistical significance tests (and in the case of Mantel-Haenszel trees also effect sizes) to avoid spurious splits, for confirmatory hypothesis testing it is recommended to use a new dataset, not used for fitting the tree. Further, resampling or $k$-fold cross validation techniques may be used to assess stability and accuracy of the model. \cite{PhilyRusc18} show how to use these techniques for assessing the stability of the set of selected variables and cutpoints. For GLMM trees, cross-validation can additionally be used for evaluating predictive accuracy \cite[e.g., ]{RooiyWeed20}, or for further optimizing predictive accuracy through the choice of model-fitting parameters, like the minimum number of observations the terminal nodes or the maximum tree depth \cite{JameyWitt23}.  
+As with any exploratory method, MOB should be considered as a tool for generating hypotheses and not as a confirmatory technique. While the MOB algorithm, as it is implemented in the \texttt{R} packages presented in this tutorial, has been constructed with care and uses statistical significance tests (and in the case of Mantel-Haenszel trees also effect sizes) to avoid spurious splits, for confirmatory hypothesis testing it is recommended to use a new dataset, not used for fitting the tree. Further, resampling or $k$-fold cross validation techniques may be used to assess stability and accuracy of the model. \cite{PhilyRusc18} show how to use these techniques for assessing the stability of the set of selected variables and cutpoints. For GLMM trees, cross-validation can additionally be used for evaluating predictive accuracy \citep[e.g., ][]{RooiyWeed20}, or for further optimizing predictive accuracy through the choice of model-fitting parameters, like the minimum number of observations in the terminal nodes or the maximum tree depth \citep{JameyWitt23}.  
 
 %\todo[inline]{I (Caro) have added a few more thoughts for the discussion above - Marjolein maybe this is already sufficient in length? please feel free to use anything from above or below and get back to me if you add/keep points where we might disagree}
 
 %Due to the exploratory nature of MOB, it does not allow for hypothesis tests\todo[inline]{I (Caro) think this will sound confusing because earlier in the paper we explain that MOB is indeed based on significance tests, and due to the fact that the stopping is based on the significance test and (at least in party and psychotree) we use Bonferroni for adjusting against the number of covariates, it is not like we are doing completely uncontrolled multiple testing - in the Raschtree paper we write about this: Moreover, it is important to note that our model-based recursive partitioning algorithm is not affected by an inflation of chance due to its recursive nature. Indeed, several statistical tests are successively conducted in a Rasch tree—but each test is conducted only if the previous test yielded a significant result. In this sense, the recursive approach forms a closed testing procedure, which does not lead to an inflation of chance as is well known from the literature on multiple comparisons (Marcus, Peritz, \& Gabriel, 1976; Hochberg \& Tamhane, 1987). For the Rasch tree, this means that the postulated significance level holds for the entire tree, not only for each individual split. This ensures that DIF is not erroneously detected as an artifact of the recursive nature of the algorithm. -- another, related, limitation that I would agree with and might be what you also had in mind is that the tree will not necessarily find the globally best partition, because every split is based on the previous split choices, here is what we wrote about this in the tree intro PsychMeth paper: Thus, variable selection in a single tree is affected by order effects similar to those present in stepwise variable selection approaches for parametric regression (that is also instable against random variation of the learning data, as pointed out by Austin and Tu 2004). In both recursive partitioning and stepwise regression, the approach of adding one locally optimal variable at a time does not necessarily (or rather hardly ever) lead to the globally best model over all possible combinations of variables. -- should we write something similar here?}, as there is no valid way to account for the exploratory searching of the subgroups. Thus, even if detected subgroups are substantively meaningful or differences are large, if researchers want to ascertain statistical significance of the subgroup differences, this should be done on new data using confirmatory techniques. \todo{Marjolein write a little more here? e.g. such as cross validation.}
 
-\hyperref[sec:TutorialRasch]{Application Example 2} showed that the Rasch tree method can employ an effect size measure to stop the tree from growing if effect-size differences are non-substantial. This also supports researchers in interpreting the tree's results with respect to whether DIF effects are negligible, medium, or large. At the same time, effect sizes are less straightforward to calculate and interpret in mixed-effects models \citep{JuddyWest17}, and thereby also for GLMM trees. \todo{Interpretation methods might not work as expected for multilevel data, so I am not convinced we should discuss this and call it a remedy.}A remedy to this issue can be interpretation techniques, such as partial dependence plots or individual conditional expectations plots. These interpretation techniques support researchers in gauging the size of the effect of predictor variables visually by depicting the predicted value of the machine learning method as a function of the value of the predictor variable(s). A comprehensive introduction, tutorial, and discussion into interpretation techniques for machine learning methods is given by \cite{Molnar2019} and \cite{Henninger2022c}. 
+\hyperref[sec:TutorialRasch]{Application Example 2} showed that the Rasch tree method can employ an effect size measure to stop the tree from growing if effect-size differences are non-substantial. This also supports researchers in interpreting the tree's results with respect to whether DIF effects are negligible, medium, or large. For mixed-effects models, computation of effect sizes is far from straightforward and several different approaches have been proposed \citep[e.g., ][]{JuddyWest17, BrysyStev18, Bran18}. Effect-size based stopping criteria for GLMM trees are therefore currently not available, but any of the proposed computation approaches proposed for tradtional GLMMs can also be computed from the parameter estimates of GLMM trees.
+
+
+%\todo{Interpretation methods might not work as expected for multilevel data, so I am not convinced we should discuss this and call it a remedy.} 
+%A remedy to this issue can be interpretation techniques, such as partial dependence plots or individual conditional expectations plots. These interpretation techniques support researchers in gauging the size of the effect of predictor variables visually by depicting the predicted value of the machine learning method as a function of the value of the predictor variable(s). A comprehensive introduction, tutorial, and discussion into interpretation techniques for machine learning methods is given by \cite{Molnar2019} and \cite{Henninger2022c}. 
 
 For GLMM trees, the use of cluster-level partitioning variables would commonly be desired in longitudinal analyses. As with traditional GLMMs, specification of the fixed and random effects requires careful consideration. For example, whether random slopes of time should be estimated, or whether random intercepts are sufficient to account for dependency between observations. Building on recent work by \citet{FokkyZeil23}, we will further study and develop methods to take various dependence structures into account. For instance, in future implementations of \texttt{glmertree}, use of parameter stability tests to also allow for detecting subgroup differences in the random-effects parameters \citep{Wang2021a} may be supported.
 
@@ -515,7 +543,7 @@ For GLMM trees, the use of cluster-level partitioning variables would commonly b
 
 \bibliography{_MOB_paper}
 
-\todo{Add DOIs.}
+%\todo{Add DOIs.}
 
 \newpage
 \appendix
@@ -555,3 +583,10 @@ For GLMM trees, the use of cluster-level partitioning variables would commonly b
 
 
 \end{document}
+
+
+\begin{Schunk}
+\begin{Soutput}
+Writing to file _MOB_paper.R 
+\end{Soutput}
+\end{Schunk}
