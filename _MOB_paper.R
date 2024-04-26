@@ -5,11 +5,11 @@ options(prompt=" ", continue = " ")
 
 
 set.seed(3)
-x1 <- runif(250, min = 5, max = 11)
-x2 <- runif(250, min = 2, max = 8)
-x3 <- runif(250, min = 4, max = 10)
+x1 <- runif(250, min = 5, max = 11) ## age
+x2 <- runif(250, min = 2, max = 8) ## gender
+x3 <- runif(250, min = 4, max = 10) ## reading comprehension
 error <- rnorm(250, sd = 1.5)
-y <- 7 + ifelse(x1 > 8 & x2 > 5, yes = 2.5, no = -2.5) + error
+y <- 7 + ifelse(x1 > 8 & x2 > 5, yes = 2.5, no = -2.5) + error ## total SDQ score (0-40)
 toy_data <- round(data.frame(x1, x2, x3, y), digits = 2L)
 toy_data$x2 <- factor(ifelse(x2 > 5, yes = ifelse(x2 > 6.5, "A", "C"), no = "B"))
 
@@ -22,6 +22,7 @@ boxplot(toy_data$y, cex = .7)
 library("partykit")
 tree <- lmtree(y ~ 1 | x1 + x2 + x3, data = toy_data)
 plot(tree, gp = gpar(cex = .7), ylim = c(1,14))
+term_node_means <- round(tapply(toy_data$y, predict(tree, type = "node"), mean), digits= 2L)
 
 
 ## Load data
@@ -78,6 +79,8 @@ save(HS_dat, file = "HS_dat.Rda")
 load("HS_dat.Rda")
 head(HS_dat, 3)
 
+hist(tapply(HS_dat$Mom_height, HS_dat$MotherID, mean))
+
 
 library("lme4")
 lmm <- lmer(PPVT ~ Program*Age + (1|MotherID/ChildID), data = HS_dat)
@@ -110,14 +113,15 @@ design_df$`PPVT at age 12` <- predict(HS_tree$lmer, newdata = cbind(design_df, A
                                       re.form = ~0)
 names(design_df)[1] <- "Node"
 
-#library("kableExtra")
-#kable_styling(
+library("kableExtra")
+add_footnote(
 knitr::kable(design_df, format = "latex", digits = 2, 
              caption = "Node-specific average predicted PPVT scores at different ages.", 
              label = "predictions", centering = FALSE,
              linesep = "", # linesep command suppressess addlinesep every 5 rows
-             row.names = FALSE, escape=TRUE, align = c("cccc"), booktabs = TRUE)#,
+             row.names = FALSE, escape=TRUE, align = c("cccc"), booktabs = TRUE),
 #latex_options = "HOLD_position")
+"HS = Head Start; PPVT = Peabody Picture Vocabulary Test.")
 
 
 plot(HS_tree, type = "simple", which = "tree", gp = gpar(cex = .5), nodesize_level = 2)
