@@ -37,6 +37,7 @@ _MOB_paper.tex
 *.out
 *.toc
 *.tex
+!Response_letter.tex
 
 ## pdfs for text and figures because they can be reproduced from code
 *.pdf
