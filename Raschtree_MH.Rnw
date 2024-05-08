@@ -78,7 +78,7 @@ library("raschtreeMH")
 
 We can use a syntax very similar to that of the original \texttt{raschtree} function, but now we also specify the additional argument \texttt{stopfun}. We want to use the Mantel-Haenszel stopping function (\texttt{stopfun\_mantelhaenszel}) together with iterative purification. It is also possible to provide other, user-defined stopping functions \citep[see][for details]{HennyDeba23}.
 
-For the purification strategy, there are three options: \texttt{none}, \texttt{2step} and \texttt{iterative}. Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until a maximum value of iterations is reached. 
+For the purification strategy, there are three options: \texttt{none}, \texttt{2step} and \texttt{iterative}. Purification means that items which have already been diagnosed with DIF are taken out of the sum score, which is used as the matching criterion in the final DIF test. It is highly recommended to use a purification strategy, because otherwise false positives (i.e., artificial DIF) may occur \citep[cf., e.g.,][and the references therein]{DebStrZei:2022:CRC,HennyDeba23,Kopfetal:2015:EPM}. In two-step purification, a new sum score without the items that were diagnosed with DIF in step 1 is computed for the final DIF analysis in step 2. When using iterative purification, this process is repeated until two runs yield the same DIF items or until the maximum number of iterations is reached. 
 The final set of DIF-free items resulting from the purification will also be used for aligning the item parameters for each group comparison, which we will discuss and display below.
 
 We fit the Raschtree using the Mantel-Haenszel stopping criterion as follows:
@@ -127,7 +127,7 @@ plot(Raschtree_MH_culture)
 
 The result is presented in Figure~\ref{fig:MHtree2}, which reveals that the Rasch tree is much more concise with a lower number of splits. In addition, in each node the number of items classified as A, B, or C is displayed. For instance, we can see that in node 1 one item is classified in category B (moderate DIF), and 4 items are classified in category C (large DIF).
 
-We can also color the DIF items in the terminal node profiles according to a particular split in the tree. We will illustrate this with two examples: First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As a reminder, the content of these items was:
+We can also color the DIF items in the terminal node profiles according to a particular split in the tree. We will illustrate this with two examples: First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As displayed in the \hyperref[sec:AppendixA]{Appendix}, the content of these items was:
 
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -175,7 +175,7 @@ plot(Raschtree_MH_culture, color_by_node = 4)
 \end{figure}%
 
 The result is presented in Figure~\ref{fig:MHtree4}. For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are %(relative to the DIF-free items for this group comparison) 
-more difficult to answer for younger respondents ($>24$ age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
+more difficult to answer for younger respondents ($24 <$ age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
 
 Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted.
 
