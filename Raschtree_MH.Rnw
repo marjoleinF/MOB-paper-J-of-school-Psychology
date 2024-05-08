@@ -45,7 +45,7 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                data = dat_SPISA)
 @
 
-\subsubsection{Pruning a Rasch tree}
+\subsubsection{Reversing splits in a Rasch tree}
 
 Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function: 
 
