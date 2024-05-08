@@ -55,8 +55,8 @@ options(prompt=" ", continue = " ")
             
        \vspace{1.5cm}
 
-       \textbf{Marjolein Fokkema$^1$, Mirka Henninger$^2$ and Carolin Strobl$^2$}\\
-       $^1$Leiden University, $^2$Universit\"at Z\"urich
+       \textbf{Marjolein Fokkema$^1$, Mirka Henninger$^{2,3}$ and Carolin Strobl$^2$}\\
+       $^1$Leiden University, $^2$University of Zurich, $^3$ University of Basel
 
        \vfill
 
