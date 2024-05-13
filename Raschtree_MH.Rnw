@@ -45,7 +45,6 @@ Raschtree_culture <- raschtree(culture ~  Gender + Age + Area,
                                data = dat_SPISA)
 @
 
-\subsubsection{Reversing splits in a Rasch tree}
 
 Once the Rasch tree has been fitted, we can plot it using the standard \texttt{plot} function: 
 
@@ -108,7 +107,7 @@ Raschtree_MH_culture <- add_mantelhaenszel(Raschtree_MH_culture,
 @
 
 
-\subsubsection{Interpretation of a Rasch tree}
+\subsubsection{Interpreting a Rasch tree}
 
 
 \begin{figure}%
@@ -125,7 +124,7 @@ After we have added this information to the Rasch tree, we can now visualize it 
 plot(Raschtree_MH_culture)
 @
 
-The result is presented in Figure~\ref{fig:MHtree2}, which reveals that the Rasch tree is much more concise with a lower number of splits. In addition, in each node the number of items classified as A, B, or C is displayed. For instance, we can see that in node 1 one item is classified in category B (moderate DIF), and 4 items are classified in category C (large DIF).
+The result is presented in Figure~\ref{fig:MHtree2}, which reveals that the Rasch tree is much more concise with a lower number of splits. In addition, in each node the number of items classified as A, B, or C is displayed. For instance, we can see that in node 1 one item is classified in category B (moderate DIF), and four items are classified in category C (large DIF).
 
 We can also color the DIF items in the terminal node profiles according to a particular split in the tree. We will illustrate this with two examples: First, we can see that for node 1 (split in the covariate \texttt{Gender}), items 1, 6, 7, 8, and 9 show DIF in categories B or C. As displayed in the \hyperref[sec:AppendixA]{Appendix}, the content of these items was:
 
@@ -175,7 +174,7 @@ plot(Raschtree_MH_culture, color_by_node = 4)
 \end{figure}%
 
 The result is presented in Figure~\ref{fig:MHtree4}. For node 4 (split in the covariate \texttt{Age}), items 1 (Painting by Andy Warhol) and 9 (Opera not by Mozart: Aida) show DIF and are %(relative to the DIF-free items for this group comparison) 
-more difficult to answer for younger respondents ($24 <$ age $\leq 29$), and easier or less difficult to answer for respondents $>29$.
+more difficult to answer for younger male respondents ($24 <$ age $\leq 29$), and easier or less difficult to answer for older male respondents (age $>29$).
 
 Detailed information about the Mantel-Haenszel criterion for each item in each node can also be accessed from the Rasch tree object using \texttt{\$info\$mantelhaenszel}. It contains the DIF classification and the value of the Mantel-Haenszel effect size measure for each item in each node, as well as the type of purification that was employed in each node, and in the case of iterative purification how many iterations were conducted.
 
@@ -183,6 +182,6 @@ Detailed information about the Mantel-Haenszel criterion for each item in each n
 Raschtree_MH_culture$info$mantelhaenszel
 @
 
-The displayed information again shows that some items show only negligible DIF (category A) in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right daughter node than in the left daughter node. For example, as we already observed in Figure~\ref{fig:MHtree3}, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer %(relative to the DIF-free items for this group comparison) 
-for participants with female or missing gender, which correspond to the right daughter node of node 1. % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
+The displayed information again shows that some items show only negligible DIF (category A) in all nodes, while other items show medium (category B) or large (category C) DIF in some or all nodes. The values of the Mantel-Haenszel effect size measure are negative when the item difficulty is lower in the right than in the left child node. For example, as we already observed in Figure~\ref{fig:MHtree3}, items 1, 6, 7, 8, and 9 have medium or large DIF (DIF categories B and C) and are  easier to answer %(relative to the DIF-free items for this group comparison) 
+for participants with female or missing gender (node 7). % Item 4 also has a negative sign, indicating that the item difficulty is lower for participants with female or missing gender. However, this item has a smaller DIF effect size. Thus it falls into DIF category A (negligible) and was not relevant for the split in \texttt{Gender}.
 

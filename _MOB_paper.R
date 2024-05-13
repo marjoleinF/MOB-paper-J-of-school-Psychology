@@ -16,13 +16,37 @@ toy_data$x2 <- factor(ifelse(x2 > 5, yes = ifelse(x2 > 6.5, "A", "C"), no = "B")
 
 library("colorspace")
 boxplot(toy_data$y, cex = .7)
-#points(x = 1, y = mean(toy_data$y), pch = 19, ylim = c(1,14))
 
 
 library("partykit")
 tree <- lmtree(y ~ 1 | x1 + x2 + x3, data = toy_data)
 plot(tree, gp = gpar(cex = .7), ylim = c(1,14))
 term_node_means <- round(tapply(toy_data$y, predict(tree, type = "node"), mean), digits= 2L)
+
+
+library("strucchange")
+gefp_x1 <- gefp(y ~ 1, fit = lm, data = toy_data, order.by = ~ x1)
+gefp_x3 <- gefp(y ~ 1, fit = lm, data = toy_data, order.by = ~ x3)
+lmod <- lm(y ~ 1, data = toy_data)
+resids <- residuals(lmod)
+par(mfrow = c(1, 3))
+plot(toy_data$x1, resids, xlab = "x1", ylab = "residuals", 
+     cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
+plot(toy_data$x2, resids, xlab = "x2", ylab = "residuals", 
+     cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
+plot(toy_data$x3, resids, xlab = "x3", ylab = "residuals", 
+     cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
+
+
+par(mfrow = c(1, 3))
+plot(toy_data$x1[order(toy_data$x1)], cumsum(resids[order(toy_data$x1)]), 
+     xlab = "x1", ylab = "cumulative sum", type = "l",
+     cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
+boxplot(t(replicate(100, tapply(resids, toy_data$x2, sum))), 
+        ylab = "sum", cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
+plot(toy_data$x3[order(toy_data$x3)], cumsum(resids[order(toy_data$x3)]), 
+     xlab = "x3", ylab = "cumulative sum", type = "l",
+     cex = 1.2, cex.lab = 1.2, cex.axis = 1.2)
 
 
 ## Load data
@@ -116,12 +140,12 @@ names(design_df)[1] <- "Node"
 library("kableExtra")
 add_footnote(
 knitr::kable(design_df, format = "latex", digits = 2, 
-             caption = "Node-specific average predicted PPVT scores at different ages.", 
+             caption = "Node-specific predicted PPVT scores at different ages.", 
              label = "predictions", centering = FALSE,
              linesep = "", # linesep command suppressess addlinesep every 5 rows
              row.names = FALSE, escape=TRUE, align = c("cccc"), booktabs = TRUE),
 #latex_options = "HOLD_position")
-"HS = Head Start; PPVT = Peabody Picture Vocabulary Test.")
+"\textit{Note.} For computing predictions, random effects were assumed zero. HS = Head Start; PPVT = Peabody Picture Vocabulary Test.", notation = "none")
 
 
 plot(HS_tree, type = "simple", which = "tree", gp = gpar(cex = .5), nodesize_level = 2)
